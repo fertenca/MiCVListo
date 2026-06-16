@@ -37,4 +37,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: e8fcd521186e721eacf57979663a1ba8
+          wranglerVersion: '4.101.0'
           command: pages deploy dist --project-name micvlisto --branch ${{ github.ref_name }}
