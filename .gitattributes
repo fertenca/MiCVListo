@@ -1,0 +1,9 @@
+# Normalizar line endings a LF en el repositorio (el build de Linux lo requiere)
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.svg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
