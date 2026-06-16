@@ -1,7 +1,10 @@
+/* ── Hero ──────────────────────────────────────────────────────────────────── */
+
 .hero {
   max-width: 720px;
   margin: 0 auto;
   text-align: center;
+  padding: var(--space-xl) var(--space-md);
 }
 
 .title {
@@ -20,7 +23,6 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
 }
 
 .cta {
@@ -44,26 +46,119 @@
   font-size: 0.9375rem;
 }
 
-.trust {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-sm) var(--space-lg);
+/* ── Pilares ───────────────────────────────────────────────────────────────── */
+
+.pillars {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md);
+  text-align: center;
+}
+
+.pillarsTitle {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-lg);
+}
+
+.pillarsList {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.pillarItem {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+.pillarHead {
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.pillarDesc {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+/* ── Para quién ────────────────────────────────────────────────────────────── */
+
+.forWhom {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-xl) var(--space-md);
+  text-align: center;
+}
+
+.forWhomTitle {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-lg);
+}
+
+.forWhomList {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto var(--space-xl);
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.forWhomItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  border-left: 3px solid var(--color-primary);
+  padding-left: var(--space-md);
+  text-align: left;
+}
+
+.forWhomLabel {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.forWhomDesc {
   color: var(--color-text-muted);
   font-size: 0.9375rem;
 }
 
-.trust li {
-  background-color: var(--color-accent-soft);
+.ctaSecondary {
+  display: inline-block;
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  padding: var(--space-md) var(--space-xl);
   border-radius: var(--radius-md);
-  padding: var(--space-xs) var(--space-md);
+  box-shadow: var(--shadow-sm);
 }
+
+.ctaSecondary:hover {
+  background-color: var(--color-primary-hover);
+  text-decoration: none;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
 
 @media (max-width: 600px) {
   .title {
     font-size: 2rem;
+  }
+
+  .pillarsList {
+    grid-template-columns: 1fr;
   }
 }

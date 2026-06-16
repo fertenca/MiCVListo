@@ -1,14 +1,9 @@
 import styles from './placeholder.module.css';
 
-/**
- * Ruta del wizard. En la Fase 0 es un placeholder navegable.
- * El wizard real (pasos, autosave local, "No sé qué poner") llega en
- * las Fases 3–5 del plan.
- */
 function Wizard() {
   return (
     <section className={styles.placeholder}>
-      <span className={styles.badge}>Próximamente · Fases 3–5</span>
+      <span className={styles.badge}>Próximamente · Fase 3</span>
       <h1>Asistente para armar tu CV</h1>
       <p className={styles.text}>
         Acá vas a responder preguntas simples, paso a paso, y la app va a

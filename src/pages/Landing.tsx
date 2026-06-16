@@ -1,40 +1,89 @@
 import { Link } from 'react-router-dom';
+import TrustBanner from '../components/TrustBanner/TrustBanner';
 import styles from './Landing.module.css';
 
-const trustPoints = [
-  'Podés crear tu CV sin cuenta.',
-  'No vendemos tus datos.',
-  'No hay anuncios.',
-  'La foto se procesa en tu navegador.',
+const PILLARS = [
+  {
+    title: 'Sin cuenta',
+    desc: 'Creás y descargás tu CV sin registrarte. Sin obstáculos.',
+  },
+  {
+    title: 'Sin anuncios',
+    desc: 'La app es limpia y enfocada. Nada que te distraiga.',
+  },
+  {
+    title: 'Tus datos son tuyos',
+    desc: 'No vendemos ni compartimos tu información con nadie.',
+  },
+  {
+    title: 'Para cualquier situación',
+    desc: 'Tengas o no experiencia formal, te ayudamos a contar lo que sabés hacer.',
+  },
 ];
 
-/**
- * Pantalla inicial. En la Fase 0 muestra la propuesta de valor y el acceso
- * al wizard. Los modos ("tengo experiencia" / "primer trabajo" / "informal")
- * y los mensajes de confianza se desarrollan en fases posteriores.
- */
+const FOR_WHOM = [
+  {
+    label: 'Tengo experiencia laboral',
+    desc: 'Actualizá tu CV o armá uno nuevo para cambiar de trabajo.',
+  },
+  {
+    label: 'Busco mi primer empleo',
+    desc: 'Te ayudamos a mostrar lo que sabés aunque no hayas trabajado antes.',
+  },
+  {
+    label: 'Trabajé de forma informal',
+    desc: 'Las changas, el cuidado de personas y las ventas también cuentan.',
+  },
+];
+
 function Landing() {
   return (
-    <section className={styles.hero}>
-      <h1 className={styles.title}>Armá tu CV profesional, gratis</h1>
-      <p className={styles.subtitle}>
-        Te guiamos paso a paso con preguntas simples. Tengas o no experiencia,
-        te ayudamos a contar lo que sabés hacer y a descargar tu CV en PDF.
-      </p>
+    <>
+      <section className={styles.hero}>
+        <h1 className={styles.title}>
+          Tu CV profesional, listo en minutos. Gratis.
+        </h1>
+        <p className={styles.subtitle}>
+          Te guiamos con preguntas simples y transformamos tus respuestas en
+          frases claras y profesionales. Sin experiencia previa, sin rodeos.
+        </p>
+        <div className={styles.actions}>
+          <Link to="/crear" className={styles.cta}>
+            Crear mi CV gratis
+          </Link>
+          <span className={styles.ctaNote}>No necesitás registrarte.</span>
+        </div>
+      </section>
 
-      <div className={styles.actions}>
-        <Link to="/crear" className={styles.cta}>
-          Empezá tu CV
+      <section className={styles.pillars}>
+        <h2 className={styles.pillarsTitle}>¿Por qué MiCVListo?</h2>
+        <ul className={styles.pillarsList}>
+          {PILLARS.map((p) => (
+            <li key={p.title} className={styles.pillarItem}>
+              <strong className={styles.pillarHead}>{p.title}</strong>
+              <span className={styles.pillarDesc}>{p.desc}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className={styles.forWhom}>
+        <h2 className={styles.forWhomTitle}>Está hecha para vos si…</h2>
+        <ul className={styles.forWhomList}>
+          {FOR_WHOM.map((item) => (
+            <li key={item.label} className={styles.forWhomItem}>
+              <span className={styles.forWhomLabel}>{item.label}</span>
+              <span className={styles.forWhomDesc}>{item.desc}</span>
+            </li>
+          ))}
+        </ul>
+        <Link to="/crear" className={styles.ctaSecondary}>
+          Crear mi CV gratis
         </Link>
-        <span className={styles.ctaNote}>No necesitás registrarte.</span>
-      </div>
+      </section>
 
-      <ul className={styles.trust}>
-        {trustPoints.map((point) => (
-          <li key={point}>{point}</li>
-        ))}
-      </ul>
-    </section>
+      <TrustBanner />
+    </>
   );
 }
 
