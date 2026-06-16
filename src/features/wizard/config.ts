@@ -2,6 +2,12 @@ import type { CVMode } from '../cv-model';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
+/** Interfaz que los componentes de paso exponen vía ref al WizardShell. */
+export interface StepRef {
+  /** Valida el paso actual. Devuelve true si es válido; muestra errores inline como efecto secundario. */
+  validate: () => boolean;
+}
+
 export type StepId =
   | 'personal'
   | 'foto'

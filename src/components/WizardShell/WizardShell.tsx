@@ -1,7 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCVStore } from '../../features/cv-model';
 import { WIZARD_STEPS, getStepTitle } from '../../features/wizard';
+import type { StepRef } from '../../features/wizard';
+import PersonalStep from '../../features/wizard/steps/PersonalStep';
 import styles from './WizardShell.module.css';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -23,6 +25,7 @@ function WizardShell() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const draft = useCVStore((s) => s.draft);
+  const stepRef = useRef<StepRef>(null);
 
   useEffect(() => {
     if (!draft) navigate('/crear', { replace: true });
@@ -41,6 +44,18 @@ function WizardShell() {
 
   function goTo(index: number) {
     setSearchParams({ paso: String(index + 1) });
+  }
+
+  function handleNext() {
+    if (stepRef.current) {
+      const valid = stepRef.current.validate();
+      if (!valid) return;
+    }
+    if (isLast) {
+      navigate('/vista-previa');
+    } else {
+      goTo(stepIndex + 1);
+    }
   }
 
   return (
@@ -76,12 +91,19 @@ function WizardShell() {
       {/* Paso actual */}
       <main className={styles.stepArea}>
         <h1 className={styles.stepTitle}>{getStepTitle(step, draft.mode)}</h1>
-        <div className={styles.stepPlaceholder}>
-          <span className={styles.placeholderBadge}>Próximamente · Fase 4</span>
-          <p className={styles.placeholderText}>
-            El formulario de este paso llega en la Fase 4.
-          </p>
-        </div>
+
+        {step.id === 'personal' ? (
+          <PersonalStep ref={stepRef} />
+        ) : (
+          <div className={styles.stepPlaceholder}>
+            <span className={styles.placeholderBadge}>
+              Próximamente · Fase 4
+            </span>
+            <p className={styles.placeholderText}>
+              El formulario de este paso llega en la Fase 4.
+            </p>
+          </div>
+        )}
       </main>
 
       {/* Navegación */}
@@ -103,23 +125,13 @@ function WizardShell() {
               Atrás
             </button>
           )}
-          {isLast ? (
-            <button
-              className={styles.btnPrimary}
-              onClick={() => navigate('/vista-previa')}
-              type="button"
-            >
-              Ver mi CV
-            </button>
-          ) : (
-            <button
-              className={styles.btnPrimary}
-              onClick={() => goTo(stepIndex + 1)}
-              type="button"
-            >
-              Siguiente
-            </button>
-          )}
+          <button
+            className={styles.btnPrimary}
+            onClick={handleNext}
+            type="button"
+          >
+            {isLast ? 'Ver mi CV' : 'Siguiente'}
+          </button>
         </div>
       </footer>
     </div>
