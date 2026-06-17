@@ -3,9 +3,10 @@ import styles from './TrustBanner.module.css';
 const MESSAGES = [
   'Podés crear tu CV sin cuenta.',
   'No vendemos tus datos.',
-  'No hay anuncios.',
-  'La descarga del PDF no requiere login.',
-  'Si más adelante iniciás sesión, será solo para guardar y editar después.',
+  'No mostramos anuncios.',
+  'La foto se procesa en tu navegador.',
+  'El PDF se genera en tu dispositivo.',
+  'El borrador queda guardado en este dispositivo mientras no inicies sesión.',
 ];
 
 function TrustBanner() {

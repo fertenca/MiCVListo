@@ -5,7 +5,11 @@ import styles from './Landing.module.css';
 const PILLARS = [
   {
     title: 'Sin cuenta',
-    desc: 'Creás y descargás tu CV sin registrarte. Sin obstáculos.',
+    desc: 'Creás y descargás tu CV sin registrarte ni dejar tu email.',
+  },
+  {
+    title: 'PDF listo para enviar',
+    desc: 'Descargás el PDF directo desde la app, sin pasos extra ni esperas.',
   },
   {
     title: 'Sin anuncios',
@@ -14,10 +18,6 @@ const PILLARS = [
   {
     title: 'Tus datos son tuyos',
     desc: 'No vendemos ni compartimos tu información con nadie.',
-  },
-  {
-    title: 'Para cualquier situación',
-    desc: 'Tengas o no experiencia formal, te ayudamos a contar lo que sabés hacer.',
   },
 ];
 
@@ -44,8 +44,8 @@ function Landing() {
           Tu CV profesional, listo en minutos. Gratis.
         </h1>
         <p className={styles.subtitle}>
-          Te guiamos con preguntas simples y transformamos tus respuestas en
-          frases claras y profesionales. Sin experiencia previa, sin rodeos.
+          Respondés preguntas simples y en minutos tenés un CV prolijo, listo
+          para descargar en PDF. Sin cuenta, sin costo, sin rodeos.
         </p>
         <div className={styles.actions}>
           <Link to="/crear" className={styles.cta}>

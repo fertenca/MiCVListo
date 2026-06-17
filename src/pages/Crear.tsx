@@ -77,8 +77,7 @@ function Crear() {
       </p>
       {showNew && (
         <p className={styles.warning}>
-          Esto va a reemplazar tu borrador actual. Esta acción no se puede
-          deshacer.
+          Si elegís empezar de cero, el borrador guardado se va a perder.
         </p>
       )}
       <div className={styles.grid}>
