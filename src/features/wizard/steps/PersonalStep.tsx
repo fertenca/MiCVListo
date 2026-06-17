@@ -22,6 +22,19 @@ type OptionalField = Extract<
 >;
 type FieldErrors = Partial<Record<string, string>>;
 
+/** Capitaliza suavemente: pone mayúscula inicial solo en palabras que están
+ *  todas en minúscula, dejando intactos nombres especiales (CABA, McAllen). */
+function gentleTitleCase(value: string): string {
+  return value
+    .split(' ')
+    .map((word) =>
+      word && word === word.toLowerCase()
+        ? word.charAt(0).toUpperCase() + word.slice(1)
+        : word,
+    )
+    .join(' ');
+}
+
 // ─── Componente ───────────────────────────────────────────────────────────────
 
 const PersonalStep = forwardRef<StepRef>(function PersonalStep(_, ref) {
@@ -141,9 +154,10 @@ const PersonalStep = forwardRef<StepRef>(function PersonalStep(_, ref) {
             type="tel"
             value={p.phone ?? ''}
             onChange={(e) => handleOptional('phone', e.target.value)}
-            placeholder="Ej: 11 1234-5678"
+            placeholder="Ej: +54 11 1234-5678"
             autoComplete="tel"
           />
+          <span className={styles.hint}>Ejemplo: +54 11 1234-5678</span>
         </div>
       </div>
 
@@ -158,9 +172,16 @@ const PersonalStep = forwardRef<StepRef>(function PersonalStep(_, ref) {
           type="text"
           value={p.city ?? ''}
           onChange={(e) => handleOptional('city', e.target.value)}
-          placeholder="Ej: Buenos Aires · Rosario · Córdoba"
+          onBlur={(e) => {
+            const titled = gentleTitleCase(e.target.value);
+            if (titled !== e.target.value) {
+              updatePersonal({ city: titled || undefined });
+            }
+          }}
+          placeholder="Ej: Moreno · Rosario · Córdoba"
           autoComplete="address-level2"
         />
+        <span className={styles.hint}>Ejemplo: Moreno</span>
       </div>
     </div>
   );

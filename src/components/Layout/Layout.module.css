@@ -71,7 +71,10 @@
 }
 
 .footerCredit {
-  padding-bottom: var(--space-lg);
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-lg) var(--space-lg);
   text-align: right;
 }
 
@@ -85,4 +88,28 @@
 .creditLink:hover {
   opacity: 1;
   text-decoration: none;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 560px) {
+  .headerInner {
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    font-size: 0.9375rem;
+  }
+
+  .footerCredit {
+    text-align: center;
+    padding-bottom: var(--space-xl);
+  }
 }

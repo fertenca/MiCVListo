@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 import { useCVStore } from '../../cv-model';
 import type { CVMode, CourseEntry } from '../../cv-model';
 import type { StepRef } from '..';
+import { isLikelyValidYear } from '../softValidation';
 import styles from './CoursesStep.module.css';
 
 // ─── Tipos locales ────────────────────────────────────────────────────────────
@@ -190,6 +191,11 @@ function EntryForm({
             onChange={(e) => onChange({ year: e.target.value })}
             placeholder="Ej: 2024"
           />
+          {!isLikelyValidYear(draft.year) && (
+            <span className={styles.softNote}>
+              Revisá el año. Parece que hay algo escrito por error.
+            </span>
+          )}
         </div>
       </div>
 
@@ -272,6 +278,11 @@ function EntryForm({
                 onChange={(e) => onChange({ certYear: e.target.value })}
                 placeholder="Ej: 2024"
               />
+              {!isLikelyValidYear(draft.certYear) && (
+                <span className={styles.softNote}>
+                  Revisá el año. Parece que hay algo escrito por error.
+                </span>
+              )}
             </div>
           </div>
 

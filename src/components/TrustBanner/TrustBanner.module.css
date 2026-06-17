@@ -33,3 +33,24 @@
   background-color: var(--color-primary);
   flex-shrink: 0;
 }
+
+/* ── Mobile: lista vertical, alineada a la izquierda ───────────────────────── */
+
+@media (max-width: 560px) {
+  .list {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .item {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .item::before {
+    margin-top: 7px;
+  }
+}

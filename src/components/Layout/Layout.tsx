@@ -15,6 +15,7 @@ function Layout() {
           </Link>
           <nav className={styles.nav} aria-label="Navegación principal">
             <Link to="/">Inicio</Link>
+            <Link to="/guia">Guía para tu CV</Link>
             <Link to="/privacidad">Privacidad</Link>
           </nav>
         </div>

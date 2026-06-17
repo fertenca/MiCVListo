@@ -10,15 +10,53 @@ function sanitizeFilename(name: string): string {
     .slice(0, 50);
 }
 
-export async function downloadCVPdf(doc: CVDocument): Promise<void> {
+/** Nombre del archivo PDF: "CV-Nombre-Apellido.pdf". */
+export function cvPdfFilename(doc: CVDocument): string {
+  const safeName = sanitizeFilename(doc.personal.fullName);
+  return safeName ? `CV-${safeName}.pdf` : 'CV.pdf';
+}
+
+/** Genera el PDF como Blob, en el dispositivo. Nada se sube a un servidor. */
+export async function generateCVPdfBlob(
+  doc: CVDocument,
+): Promise<{ blob: Blob; filename: string }> {
   const blob = await pdf(<ClassicPdfTemplate doc={doc} />).toBlob();
+  return { blob, filename: cvPdfFilename(doc) };
+}
+
+/** Descarga el PDF al dispositivo del usuario. */
+export async function downloadCVPdf(doc: CVDocument): Promise<void> {
+  const { blob, filename } = await generateCVPdfBlob(doc);
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const safeName = sanitizeFilename(doc.personal.fullName);
   a.href = url;
-  a.download = safeName ? `CV-${safeName}.pdf` : 'CV.pdf';
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+/**
+ * Comparte el archivo PDF real usando la Web Share API (cuando el navegador
+ * lo soporta). Comparte el File, no un enlace blob:, así sirve para enviar por
+ * WhatsApp o email. Devuelve false si el navegador no soporta compartir
+ * archivos. Si el usuario cancela, se propaga un AbortError.
+ */
+export async function shareCVPdf(doc: CVDocument): Promise<boolean> {
+  const { blob, filename } = await generateCVPdfBlob(doc);
+  const file = new File([blob], filename, { type: 'application/pdf' });
+
+  if (
+    typeof navigator.canShare === 'function' &&
+    navigator.canShare({ files: [file] })
+  ) {
+    await navigator.share({
+      files: [file],
+      title: filename,
+    });
+    return true;
+  }
+
+  return false;
 }

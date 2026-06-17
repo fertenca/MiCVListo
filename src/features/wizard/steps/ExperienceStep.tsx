@@ -3,7 +3,10 @@ import { useCVStore } from '../../cv-model';
 import type { CVMode, ExperienceEntry } from '../../cv-model';
 import type { StepRef } from '..';
 import { NoIdeaHelper } from '../../phrase-engine';
+import { validateExperienceDates } from '../softValidation';
 import styles from './ExperienceStep.module.css';
+
+const BULLETS_LONG_THRESHOLD = 7;
 
 // ─── Tipos locales ────────────────────────────────────────────────────────────
 
@@ -326,6 +329,16 @@ function EntryForm({
   onSave,
   onCancel,
 }: FormProps) {
+  const dateHints = validateExperienceDates(
+    draft.startDate,
+    draft.endDate,
+    draft.isCurrentJob,
+  );
+  const bulletCount = draft.bulletsText
+    .split('\n')
+    .map((s) => s.trim())
+    .filter(Boolean).length;
+
   return (
     <div className={styles.entryForm}>
       {/* Rol */}
@@ -437,6 +450,16 @@ function EntryForm({
         </div>
       </div>
 
+      {dateHints.length > 0 && (
+        <ul className={styles.softHints}>
+          {dateHints.map((hint) => (
+            <li key={hint} className={styles.softHint}>
+              {hint}
+            </li>
+          ))}
+        </ul>
+      )}
+
       {/* Tareas */}
       <div className={styles.field}>
         <label className={styles.label} htmlFor="exp-bullets">
@@ -453,6 +476,18 @@ function EntryForm({
           }
           rows={4}
         />
+        {bulletCount === 0 && (
+          <p className={styles.softHint}>
+            Si querés, podés agregar 2 o 3 tareas para explicar mejor qué hacías
+            en esta experiencia.
+          </p>
+        )}
+        {bulletCount > BULLETS_LONG_THRESHOLD && (
+          <p className={styles.softHint}>
+            Vas muy bien. Si esta experiencia queda muy larga, podés dejar solo
+            las tareas que mejor muestran lo que sabés hacer.
+          </p>
+        )}
       </div>
 
       <NoIdeaHelper onAdd={onNoIdeaAdd} />

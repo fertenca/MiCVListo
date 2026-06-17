@@ -61,7 +61,8 @@ export function NoIdeaHelper({ onAdd }: Props) {
     <div className={styles.panel}>
       <p className={styles.intro}>
         Marcá las tareas que hacías. Las convertimos en frases más prolijas para
-        tu CV.
+        tu CV. No hace falta marcar todo. Elegí las tareas que más te
+        representen.
       </p>
 
       <div className={styles.categories}>

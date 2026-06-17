@@ -94,6 +94,12 @@
   color: #d97706;
 }
 
+.softNote {
+  margin: var(--space-xs) 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
 /* ── Ejemplo ───────────────────────────────────────────────────────────────── */
 
 .example {

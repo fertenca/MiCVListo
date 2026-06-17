@@ -43,6 +43,15 @@ function groupSkills(skills: SkillEntry[]): [string, SkillEntry[]][] {
   return Array.from(map);
 }
 
+/** Una habilidad es un chip redundante si su nombre coincide con el de la
+ *  categoría que ya se muestra como título (salvo que aporte un certificado). */
+function isRedundantChip(sk: SkillEntry, category: string): boolean {
+  const sameLabel =
+    sk.label.trim().toLowerCase() === category.trim().toLowerCase();
+  const hasCert = !!(sk.certificate?.hasCertificate && sk.certificate.name);
+  return sameLabel && !hasCert;
+}
+
 // ─── Sub-componente: encabezado de sección ────────────────────────────────────
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -215,21 +224,29 @@ export function ClassicTemplate({ doc }: Props) {
         <section className={styles.section}>
           <SectionTitle>Habilidades</SectionTitle>
           <div className={styles.skillGroups}>
-            {skillGroups.map(([category, items]) => (
-              <div key={category} className={styles.skillGroup}>
-                <span className={styles.skillCategory}>{category}</span>
-                <div className={styles.skillChips}>
-                  {items.map((sk) => (
-                    <span key={sk.id} className={styles.skillChip}>
-                      {sk.label}
-                      {sk.certificate?.hasCertificate && sk.certificate.name && (
-                        <span className={styles.skillCert}> ✓</span>
-                      )}
-                    </span>
-                  ))}
+            {skillGroups.map(([category, items]) => {
+              const visible = items.filter(
+                (sk) => !isRedundantChip(sk, category),
+              );
+              return (
+                <div key={category} className={styles.skillGroup}>
+                  <span className={styles.skillCategory}>{category}</span>
+                  {visible.length > 0 && (
+                    <div className={styles.skillChips}>
+                      {visible.map((sk) => (
+                        <span key={sk.id} className={styles.skillChip}>
+                          {sk.label}
+                          {sk.certificate?.hasCertificate &&
+                            sk.certificate.name && (
+                              <span className={styles.skillCert}> ✓</span>
+                            )}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}

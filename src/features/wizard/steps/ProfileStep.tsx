@@ -26,6 +26,7 @@ const EXAMPLES: Record<CVMode, string> = {
 };
 
 const CHAR_SOFT_LIMIT = 600;
+const WORD_SOFT_MIN = 15;
 
 // ─── Componente ───────────────────────────────────────────────────────────────
 
@@ -42,6 +43,8 @@ const ProfileStep = forwardRef<StepRef>(function ProfileStep(_, ref) {
   const profile = draft.profile ?? '';
   const charCount = profile.length;
   const isTooLong = charCount > CHAR_SOFT_LIMIT;
+  const wordCount = profile.trim() ? profile.trim().split(/\s+/).length : 0;
+  const isTooShort = wordCount > 0 && wordCount < WORD_SOFT_MIN && !isTooLong;
 
   return (
     <div className={styles.form}>
@@ -71,6 +74,12 @@ const ProfileStep = forwardRef<StepRef>(function ProfileStep(_, ref) {
             </span>
           )}
         </div>
+        {isTooShort && (
+          <p className={styles.softNote}>
+            Un perfil de 3 a 5 líneas suele ser suficiente. Contá quién sos, qué
+            sabés hacer y qué tipo de trabajo buscás.
+          </p>
+        )}
       </div>
 
       <ProfileHelper

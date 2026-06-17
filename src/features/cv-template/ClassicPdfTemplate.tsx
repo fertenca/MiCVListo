@@ -39,6 +39,15 @@ function groupSkills(skills: SkillEntry[]): [string, SkillEntry[]][] {
   return Array.from(map);
 }
 
+/** Una habilidad es un chip redundante si su nombre coincide con el de la
+ *  categoría que ya se muestra como título (salvo que aporte un certificado). */
+function isRedundantChip(sk: SkillEntry, category: string): boolean {
+  const sameLabel =
+    sk.label.trim().toLowerCase() === category.trim().toLowerCase();
+  const hasCert = !!(sk.certificate?.hasCertificate && sk.certificate.name);
+  return sameLabel && !hasCert;
+}
+
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
@@ -442,23 +451,31 @@ export function ClassicPdfTemplate({ doc }: Props) {
           <View style={styles.section}>
             <SectionTitle label="Habilidades" />
             <View style={styles.skillGroups}>
-              {skillGroups.map(([category, items]) => (
-                <View key={category} style={styles.skillGroupRow}>
-                  <Text style={styles.skillCategoryLabel}>{category}</Text>
-                  <View style={styles.skillChipWrap}>
-                    {items.map((sk) => (
-                      <View key={sk.id} style={styles.skillChip}>
-                        <Text style={styles.skillChipText}>
-                          {sk.label}
-                          {sk.certificate?.hasCertificate && sk.certificate.name
-                            ? ' (cert.)'
-                            : ''}
-                        </Text>
+              {skillGroups.map(([category, items]) => {
+                const visible = items.filter(
+                  (sk) => !isRedundantChip(sk, category),
+                );
+                return (
+                  <View key={category} style={styles.skillGroupRow}>
+                    <Text style={styles.skillCategoryLabel}>{category}</Text>
+                    {visible.length > 0 && (
+                      <View style={styles.skillChipWrap}>
+                        {visible.map((sk) => (
+                          <View key={sk.id} style={styles.skillChip}>
+                            <Text style={styles.skillChipText}>
+                              {sk.label}
+                              {sk.certificate?.hasCertificate &&
+                              sk.certificate.name
+                                ? ' (cert.)'
+                                : ''}
+                            </Text>
+                          </View>
+                        ))}
                       </View>
-                    ))}
+                    )}
                   </View>
-                </View>
-              ))}
+                );
+              })}
             </View>
           </View>
         )}

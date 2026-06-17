@@ -89,6 +89,51 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+/* ── Botón secundario: compartir PDF ───────────────────────────────────────── */
+
+.btnShare {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  font-weight: 500;
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btnShare:hover:not(:disabled) {
+  background-color: var(--color-accent-soft);
+}
+
+.btnShare:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btnShareNote {
+  font-size: 0.6875rem;
+  color: #b91c1c;
+}
+
+/* ── Acciones repetidas debajo de la preview ───────────────────────────────── */
+
+.actionsBottom {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-lg);
+}
+
 /* ── Marco de la preview ───────────────────────────────────────────────────── */
 
 .previewFrame {
@@ -105,12 +150,14 @@
     flex-direction: column;
   }
 
-  .actions {
+  .actions,
+  .actionsBottom {
     width: 100%;
   }
 
   .btnEdit,
-  .btnPdf {
+  .btnPdf,
+  .btnShare {
     flex: 1;
     justify-content: center;
     text-align: center;
