@@ -5,6 +5,7 @@ import { WIZARD_STEPS, getStepTitle } from '../../features/wizard';
 import type { StepRef } from '../../features/wizard';
 import PersonalStep from '../../features/wizard/steps/PersonalStep';
 import ProfileStep from '../../features/wizard/steps/ProfileStep';
+import ExperienceStep from '../../features/wizard/steps/ExperienceStep';
 import styles from './WizardShell.module.css';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -97,6 +98,8 @@ function WizardShell() {
           <PersonalStep ref={stepRef} />
         ) : step.id === 'perfil' ? (
           <ProfileStep ref={stepRef} />
+        ) : step.id === 'experiencia' ? (
+          <ExperienceStep ref={stepRef} />
         ) : (
           <div className={styles.stepPlaceholder}>
             <span className={styles.placeholderBadge}>

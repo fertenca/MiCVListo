@@ -1,0 +1,368 @@
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ── Mensajes ──────────────────────────────────────────────────────────────── */
+
+.reassurance {
+  padding: var(--space-md);
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-md);
+  color: #166534;
+  font-size: 0.9375rem;
+}
+
+.help {
+  margin: 0;
+  padding: var(--space-md);
+  background-color: var(--color-accent-soft);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.unsavedWarning {
+  margin: 0;
+  padding: var(--space-md);
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  color: #dc2626;
+  font-size: 0.9375rem;
+}
+
+/* ── Lista de entradas ─────────────────────────────────────────────────────── */
+
+.entryList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Tarjeta de entrada ────────────────────────────────────────────────────── */
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cardRole {
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.cardOrg {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+.cardMeta {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+}
+
+.actionBtn:hover {
+  background-color: var(--color-accent-soft);
+}
+
+.actionBtnRemove {
+  color: #dc2626;
+}
+
+.actionBtnRemove:hover {
+  background-color: #fef2f2;
+}
+
+.cardBullets {
+  list-style: disc;
+  padding-left: var(--space-lg);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.cardBulletsMore {
+  font-size: 0.875rem;
+  font-style: italic;
+  list-style: none;
+  margin-left: calc(-1 * var(--space-lg));
+}
+
+/* ── Formulario de entrada ─────────────────────────────────────────────────── */
+
+.entryForm {
+  background-color: var(--color-accent-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Campos genéricos ──────────────────────────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.labelSpacer {
+  display: block;
+  height: 1.4375rem; /* igual que label para alinear en grid */
+}
+
+.required {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+.optional {
+  color: var(--color-text-muted);
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
+.errorMsg {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+/* ── Inputs ────────────────────────────────────────────────────────────────── */
+
+.input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.input:disabled {
+  background-color: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.inputError {
+  border-color: #dc2626;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  resize: vertical;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ── Grillas de campos ─────────────────────────────────────────────────────── */
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+.datesRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  align-items: end;
+}
+
+@media (min-width: 540px) {
+  .row {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .datesRow {
+    grid-template-columns: 1fr 1fr auto;
+  }
+}
+
+/* ── Toggle formal/informal ────────────────────────────────────────────────── */
+
+.typeToggle {
+  display: flex;
+  gap: var(--space-lg);
+  padding-top: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+/* ── Checkbox Actualidad ───────────────────────────────────────────────────── */
+
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.9375rem;
+  cursor: pointer;
+  padding-top: var(--space-sm);
+  white-space: nowrap;
+}
+
+/* ── Acciones del formulario ───────────────────────────────────────────────── */
+
+.formActions {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ── Botón agregar ─────────────────────────────────────────────────────────── */
+
+.addBtn {
+  width: 100%;
+  padding: var(--space-md);
+  background-color: transparent;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.addBtn:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-accent-soft);
+}
+
+/* ── Botones ───────────────────────────────────────────────────────────────── */
+
+.btnPrimary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: inherit;
+  padding: var(--space-sm) var(--space-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.btnPrimary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btnGhost {
+  background-color: transparent;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btnGhost:hover {
+  color: var(--color-text);
+}
