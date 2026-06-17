@@ -67,5 +67,22 @@
   gap: var(--space-sm) var(--space-lg);
   justify-content: space-between;
   padding-top: var(--space-lg);
+  padding-bottom: var(--space-sm);
+}
+
+.footerCredit {
   padding-bottom: var(--space-lg);
+  text-align: right;
+}
+
+.creditLink {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.creditLink:hover {
+  opacity: 1;
+  text-decoration: none;
 }

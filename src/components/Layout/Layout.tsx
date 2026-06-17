@@ -31,6 +31,16 @@ function Layout() {
           <span>Gratis · Sin anuncios · Sin vender tus datos</span>
           <span>Podés crear tu CV sin cuenta.</span>
         </div>
+        <div className={styles.footerCredit}>
+          <a
+            href="https://github.com/fertenca"
+            target="_blank"
+            rel="noreferrer"
+            className={styles.creditLink}
+          >
+            by Fer Tenca
+          </a>
+        </div>
       </footer>
     </div>
   );
