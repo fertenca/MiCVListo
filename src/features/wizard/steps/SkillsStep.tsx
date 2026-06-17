@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 import { useCVStore } from '../../cv-model';
 import type { CVMode, SkillEntry } from '../../cv-model';
 import type { StepRef } from '..';
+import { SkillsHelper } from '../../phrase-engine';
 import styles from './SkillsStep.module.css';
 
 // ─── Tipos locales ────────────────────────────────────────────────────────────
@@ -349,6 +350,12 @@ const SkillsStep = forwardRef<StepRef>(function SkillsStep(_, ref) {
     }
   }
 
+  function handleHelperAdd(skills: Omit<SkillEntry, 'id'>[]) {
+    for (const skill of skills) {
+      addSkill(skill);
+    }
+  }
+
   function handleChange(updates: Partial<EntryDraft>) {
     setEntryDraft((prev) => ({ ...prev, ...updates }));
     if (updates.label !== undefined && entryErrors.label) {
@@ -417,9 +424,15 @@ const SkillsStep = forwardRef<StepRef>(function SkillsStep(_, ref) {
       )}
 
       {formMode.type === 'idle' && (
-        <button className={styles.addBtn} onClick={startNew} type="button">
-          + Agregar habilidad
-        </button>
+        <>
+          <SkillsHelper
+            existingSkills={draft.skills}
+            onAdd={handleHelperAdd}
+          />
+          <button className={styles.addBtn} onClick={startNew} type="button">
+            + Agregar habilidad
+          </button>
+        </>
       )}
     </div>
   );
