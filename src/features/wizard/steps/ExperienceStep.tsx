@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 import { useCVStore } from '../../cv-model';
 import type { CVMode, ExperienceEntry } from '../../cv-model';
 import type { StepRef } from '..';
+import { NoIdeaHelper } from '../../phrase-engine';
 import styles from './ExperienceStep.module.css';
 
 // ─── Tipos locales ────────────────────────────────────────────────────────────
@@ -306,6 +307,7 @@ interface FormProps {
   refDraft: RefDraft;
   onRefChange: (updates: Partial<RefDraft>) => void;
   onChange: (updates: Partial<EntryDraft>) => void;
+  onNoIdeaAdd: (bullets: string[]) => void;
   onSave: () => void;
   onCancel: () => void;
 }
@@ -320,6 +322,7 @@ function EntryForm({
   refDraft,
   onRefChange,
   onChange,
+  onNoIdeaAdd,
   onSave,
   onCancel,
 }: FormProps) {
@@ -451,6 +454,8 @@ function EntryForm({
           rows={4}
         />
       </div>
+
+      <NoIdeaHelper onAdd={onNoIdeaAdd} />
 
       {/* Referencia relacionada */}
       <RefSection
@@ -640,6 +645,17 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
     setRefDraft((prev) => ({ ...prev, ...updates }));
   }
 
+  function handleNoIdeaAdd(bullets: string[]) {
+    setEntryDraft((prev) => {
+      const existing = prev.bulletsText.trim();
+      const toAdd = bullets.join('\n');
+      return {
+        ...prev,
+        bulletsText: existing ? `${existing}\n${toAdd}` : toAdd,
+      };
+    });
+  }
+
   return (
     <div className={styles.step}>
       {draft.mode === 'primer-empleo' && (
@@ -673,6 +689,7 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
                   refDraft={refDraft}
                   onRefChange={handleRefChange}
                   onChange={handleChange}
+                  onNoIdeaAdd={handleNoIdeaAdd}
                   onSave={handleSave}
                   onCancel={handleCancel}
                 />
@@ -699,6 +716,7 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
           refDraft={refDraft}
           onRefChange={handleRefChange}
           onChange={handleChange}
+          onNoIdeaAdd={handleNoIdeaAdd}
           onSave={handleSave}
           onCancel={handleCancel}
         />
