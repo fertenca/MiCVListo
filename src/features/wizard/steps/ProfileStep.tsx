@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle } from 'react';
 import { useCVStore } from '../../cv-model';
 import type { CVMode } from '../../cv-model';
 import type { StepRef } from '..';
+import { ProfileHelper } from '../../phrase-engine';
 import styles from './ProfileStep.module.css';
 
 // ─── Contenido por modo ───────────────────────────────────────────────────────
@@ -71,6 +72,12 @@ const ProfileStep = forwardRef<StepRef>(function ProfileStep(_, ref) {
           )}
         </div>
       </div>
+
+      <ProfileHelper
+        mode={draft.mode}
+        currentText={profile}
+        onReplace={(text) => setProfile(text || undefined)}
+      />
 
       <div className={styles.example}>
         <p className={styles.exampleLabel}>
