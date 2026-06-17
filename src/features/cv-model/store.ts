@@ -12,6 +12,7 @@ import type {
   SkillEntry,
   LanguageEntry,
   ReferenceEntry,
+  AvailabilityData,
 } from './types';
 
 // ─── Constantes ──────────────────────────────────────────────────────────────
@@ -92,7 +93,7 @@ export interface CVStore {
 
   // Habilidades (array)
   /** Agrega una habilidad y devuelve su id. */
-  addSkill: (label: string, category?: string) => string;
+  addSkill: (entry: Omit<SkillEntry, 'id'>) => string;
   updateSkill: (id: string, data: Partial<Omit<SkillEntry, 'id'>>) => void;
   removeSkill: (id: string) => void;
   /** Reemplaza el array completo (útil para el selector por chips). */
@@ -107,7 +108,7 @@ export interface CVStore {
   removeLanguage: (id: string) => void;
 
   // Disponibilidad
-  setAvailability: (availability: string | undefined) => void;
+  setAvailability: (availability: AvailabilityData | undefined) => void;
 
   // Referencias (array)
   addReference: (entry: Omit<ReferenceEntry, 'id'>) => string;
@@ -292,14 +293,14 @@ export const useCVStore = create<CVStore>()(
 
       // ── Habilidades ────────────────────────────────────────────────────────
 
-      addSkill: (label, category) => {
+      addSkill: (entry) => {
         const id = nanoid();
         set((s) =>
           s.draft
             ? {
                 draft: touch({
                   ...s.draft,
-                  skills: [...s.draft.skills, { id, label, category }],
+                  skills: [...s.draft.skills, { ...entry, id }],
                 }),
               }
             : s,
@@ -431,9 +432,22 @@ export const useCVStore = create<CVStore>()(
     }),
     {
       name: STORAGE_KEY,
-      version: 1,
-      // Cuando schemaVersion suba: agregar `migrate` acá para transformar
-      // borradores guardados al nuevo esquema sin perder el trabajo del usuario.
+      version: 2,
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as { draft?: Record<string, unknown> };
+        if (version < 2 && state.draft) {
+          // v1→v2: availability era string, ahora es AvailabilityData
+          if (typeof state.draft.availability === 'string') {
+            const oldNotes = (state.draft.availability as string).trim();
+            state.draft.availability = {
+              scheduleOptions: [],
+              modalityOptions: [],
+              notes: oldNotes || undefined,
+            };
+          }
+        }
+        return state as unknown as CVStore;
+      },
     },
   ),
 );

@@ -16,7 +16,57 @@
   font-size: 0.9375rem;
 }
 
-/* ── Campo ─────────────────────────────────────────────────────────────────── */
+.softNote {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* ── Grupos de opciones ────────────────────────────────────────────────────── */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.groupLabel {
+  margin: 0;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.optionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xs) var(--space-md);
+}
+
+@media (min-width: 480px) {
+  .optionGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.optionLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: var(--space-xs);
+  border-radius: var(--radius-md);
+  transition: background-color 0.1s ease;
+}
+
+.optionLabel:hover {
+  background-color: var(--color-accent-soft);
+}
+
+/* ── Campos de texto ───────────────────────────────────────────────────────── */
 
 .field {
   display: flex;
@@ -34,6 +84,27 @@
   color: var(--color-text-muted);
   font-weight: 400;
   font-size: 0.875rem;
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .textarea {
@@ -57,52 +128,4 @@
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-/* ── Contador de caracteres ────────────────────────────────────────────────── */
-
-.charRow {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.charCount {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-}
-
-.charCountOver {
-  color: #d97706;
-}
-
-/* ── Ejemplos ──────────────────────────────────────────────────────────────── */
-
-.examples {
-  background-color: var(--color-accent-soft);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-md) var(--space-lg);
-}
-
-.examplesTitle {
-  margin: 0 0 var(--space-sm) 0;
-  font-weight: 500;
-  font-size: 0.9375rem;
-  color: var(--color-text-muted);
-}
-
-.examplesList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.exampleItem {
-  font-size: 0.9375rem;
-  color: var(--color-text-muted);
-  padding-left: var(--space-sm);
-  border-left: 2px solid var(--color-border);
 }

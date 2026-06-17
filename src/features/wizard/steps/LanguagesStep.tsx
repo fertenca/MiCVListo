@@ -14,6 +14,11 @@ type FormMode =
 interface EntryDraft {
   language: string;
   level: LanguageLevel;
+  hasCertificate: boolean;
+  certName: string;
+  certInstitution: string;
+  certYear: string;
+  certScoreOrLevel: string;
 }
 
 // ─── Textos y etiquetas ───────────────────────────────────────────────────────
@@ -43,14 +48,42 @@ const LEVEL_LABELS: Record<LanguageLevel, string> = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const DEFAULT_DRAFT: EntryDraft = { language: '', level: 'intermedio' };
+const DEFAULT_DRAFT: EntryDraft = {
+  language: '',
+  level: 'intermedio',
+  hasCertificate: false,
+  certName: '',
+  certInstitution: '',
+  certYear: '',
+  certScoreOrLevel: '',
+};
 
 function draftToEntry(d: EntryDraft): Omit<LanguageEntry, 'id'> {
-  return { language: d.language.trim(), level: d.level };
+  return {
+    language: d.language.trim(),
+    level: d.level,
+    certificate: d.hasCertificate
+      ? {
+          hasCertificate: true,
+          name: d.certName.trim() || undefined,
+          institution: d.certInstitution.trim() || undefined,
+          year: d.certYear.trim() || undefined,
+          scoreOrLevel: d.certScoreOrLevel.trim() || undefined,
+        }
+      : undefined,
+  };
 }
 
 function entryToDraft(e: LanguageEntry): EntryDraft {
-  return { language: e.language, level: e.level };
+  return {
+    language: e.language,
+    level: e.level,
+    hasCertificate: e.certificate?.hasCertificate ?? false,
+    certName: e.certificate?.name ?? '',
+    certInstitution: e.certificate?.institution ?? '',
+    certYear: e.certificate?.year ?? '',
+    certScoreOrLevel: e.certificate?.scoreOrLevel ?? '',
+  };
 }
 
 // ─── EntryCard ────────────────────────────────────────────────────────────────
@@ -62,12 +95,20 @@ interface CardProps {
 }
 
 function EntryCard({ entry, onEdit, onRemove }: CardProps) {
+  const certLabel =
+    entry.certificate?.hasCertificate && entry.certificate.name
+      ? entry.certificate.name
+      : null;
+
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div className={styles.cardInfo}>
           <p className={styles.cardLanguage}>{entry.language}</p>
           <p className={styles.cardLevel}>{LEVEL_LABELS[entry.level]}</p>
+          {certLabel && (
+            <p className={styles.cardCert}>Certificado: {certLabel}</p>
+          )}
         </div>
         <div className={styles.cardActions}>
           <button className={styles.actionBtn} onClick={onEdit} type="button">
@@ -145,6 +186,105 @@ function EntryForm({
           ))}
         </div>
       </div>
+
+      {/* Certificado */}
+      <div className={styles.field}>
+        <span className={styles.label}>
+          ¿Tenés certificado o examen de este idioma?
+        </span>
+        <div className={styles.certToggle}>
+          <label className={styles.radioLabel}>
+            <input
+              type="radio"
+              name="lang-cert"
+              checked={!draft.hasCertificate}
+              onChange={() =>
+                onChange({
+                  hasCertificate: false,
+                  certName: '',
+                  certInstitution: '',
+                  certYear: '',
+                  certScoreOrLevel: '',
+                })
+              }
+            />
+            No
+          </label>
+          <label className={styles.radioLabel}>
+            <input
+              type="radio"
+              name="lang-cert"
+              checked={draft.hasCertificate}
+              onChange={() => onChange({ hasCertificate: true })}
+            />
+            Sí
+          </label>
+        </div>
+      </div>
+
+      {draft.hasCertificate && (
+        <div className={styles.certFields}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="lang-cert-name">
+              Certificado o examen{' '}
+              <span className={styles.optional}>(opcional)</span>
+            </label>
+            <input
+              id="lang-cert-name"
+              className={styles.input}
+              type="text"
+              value={draft.certName}
+              onChange={(e) => onChange({ certName: e.target.value })}
+              placeholder="Ej: First Certificate · TOEFL · IELTS · Cambridge · CELPE-Bras"
+            />
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="lang-cert-inst">
+                Institución{' '}
+                <span className={styles.optional}>(opcional)</span>
+              </label>
+              <input
+                id="lang-cert-inst"
+                className={styles.input}
+                type="text"
+                value={draft.certInstitution}
+                onChange={(e) => onChange({ certInstitution: e.target.value })}
+                placeholder="Ej: British Council · IDP · ETS"
+              />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="lang-cert-year">
+                Año <span className={styles.optional}>(opcional)</span>
+              </label>
+              <input
+                id="lang-cert-year"
+                className={styles.input}
+                type="text"
+                value={draft.certYear}
+                onChange={(e) => onChange({ certYear: e.target.value })}
+                placeholder="Ej: 2023"
+              />
+            </div>
+          </div>
+
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="lang-cert-score">
+              Puntaje o nivel certificado{' '}
+              <span className={styles.optional}>(opcional)</span>
+            </label>
+            <input
+              id="lang-cert-score"
+              className={styles.input}
+              type="text"
+              value={draft.certScoreOrLevel}
+              onChange={(e) => onChange({ certScoreOrLevel: e.target.value })}
+              placeholder="Ej: B2 · 7.5 · 110/120 · Pass"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Acciones */}
       <div className={styles.formActions}>
@@ -241,21 +381,18 @@ const LanguagesStep = forwardRef<StepRef>(function LanguagesStep(_, ref) {
     <div className={styles.step}>
       <p className={styles.help}>{HELP[draft.mode]}</p>
 
-      {/* Nota suave cuando está vacío */}
       {isEmpty && formMode.type === 'idle' && (
         <p className={styles.softNote}>
           Si no cargás idiomas podés seguir igual. No es obligatorio.
         </p>
       )}
 
-      {/* Advertencia de formulario sin guardar */}
       {showUnsavedWarning && (
         <p role="alert" className={styles.unsavedWarning}>
           Tenés un idioma sin guardar. Guardalo o cancelalo antes de continuar.
         </p>
       )}
 
-      {/* Lista de entradas existentes */}
       {!isEmpty && (
         <ul className={styles.entryList}>
           {draft.languages.map((entry) => (
@@ -281,7 +418,6 @@ const LanguagesStep = forwardRef<StepRef>(function LanguagesStep(_, ref) {
         </ul>
       )}
 
-      {/* Formulario nueva entrada */}
       {formMode.type === 'new' && (
         <EntryForm
           draft={entryDraft}
@@ -293,7 +429,6 @@ const LanguagesStep = forwardRef<StepRef>(function LanguagesStep(_, ref) {
         />
       )}
 
-      {/* Botón agregar */}
       {formMode.type === 'idle' && (
         <button className={styles.addBtn} onClick={startNew} type="button">
           + Agregar idioma

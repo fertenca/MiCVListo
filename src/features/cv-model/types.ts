@@ -59,16 +59,34 @@ export interface CourseEntry {
   year?: string;
 }
 
+export interface SkillCertificate {
+  hasCertificate: boolean;
+  name?: string;
+  institution?: string;
+  year?: string;
+  verificationUrl?: string;
+}
+
 export interface SkillEntry {
   id: string;
   label: string;
   category?: string;
+  certificate?: SkillCertificate;
+}
+
+export interface LanguageCertificate {
+  hasCertificate: boolean;
+  name?: string;
+  institution?: string;
+  year?: string;
+  scoreOrLevel?: string;
 }
 
 export interface LanguageEntry {
   id: string;
   language: string;
   level: LanguageLevel;
+  certificate?: LanguageCertificate;
 }
 
 export interface ReferenceEntry {
@@ -76,6 +94,15 @@ export interface ReferenceEntry {
   name: string;
   relation?: string;
   phone?: string;
+  /** Id de la ExperienceEntry relacionada, si el usuario lo vinculó. */
+  relatedExperienceId?: string;
+}
+
+export interface AvailabilityData {
+  scheduleOptions: string[];
+  modalityOptions: string[];
+  location?: string;
+  notes?: string;
 }
 
 export interface CVMeta {
@@ -99,7 +126,7 @@ export interface CVDocument {
   courses: CourseEntry[];
   skills: SkillEntry[];
   languages: LanguageEntry[];
-  availability?: string;
+  availability?: AvailabilityData;
   references: ReferenceEntry[];
   meta: CVMeta;
 }

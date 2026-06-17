@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { useCVStore } from '../../cv-model';
-import type { CVMode, ReferenceEntry } from '../../cv-model';
+import type { CVMode, ExperienceEntry, ReferenceEntry } from '../../cv-model';
 import type { StepRef } from '..';
 import styles from './ReferencesStep.module.css';
 
@@ -15,6 +15,7 @@ interface EntryDraft {
   name: string;
   relation: string;
   phone: string;
+  relatedExperienceId: string;
 }
 
 // ─── Textos y etiquetas ───────────────────────────────────────────────────────
@@ -30,13 +31,19 @@ const HELP: Record<CVMode, string> = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const DEFAULT_DRAFT: EntryDraft = { name: '', relation: '', phone: '' };
+const DEFAULT_DRAFT: EntryDraft = {
+  name: '',
+  relation: '',
+  phone: '',
+  relatedExperienceId: '',
+};
 
 function draftToEntry(d: EntryDraft): Omit<ReferenceEntry, 'id'> {
   return {
     name: d.name.trim(),
     relation: d.relation.trim() || undefined,
     phone: d.phone.trim() || undefined,
+    relatedExperienceId: d.relatedExperienceId || undefined,
   };
 }
 
@@ -45,19 +52,28 @@ function entryToDraft(e: ReferenceEntry): EntryDraft {
     name: e.name,
     relation: e.relation ?? '',
     phone: e.phone ?? '',
+    relatedExperienceId: e.relatedExperienceId ?? '',
   };
+}
+
+function expLabel(e: ExperienceEntry): string {
+  return e.org ? `${e.role} — ${e.org}` : e.role;
 }
 
 // ─── EntryCard ────────────────────────────────────────────────────────────────
 
 interface CardProps {
   entry: ReferenceEntry;
+  experiences: ExperienceEntry[];
   onEdit: () => void;
   onRemove: () => void;
 }
 
-function EntryCard({ entry, onEdit, onRemove }: CardProps) {
+function EntryCard({ entry, experiences, onEdit, onRemove }: CardProps) {
   const meta = [entry.relation, entry.phone].filter(Boolean).join(' · ');
+  const linkedExp = entry.relatedExperienceId
+    ? experiences.find((e) => e.id === entry.relatedExperienceId)
+    : null;
 
   return (
     <div className={styles.card}>
@@ -65,6 +81,11 @@ function EntryCard({ entry, onEdit, onRemove }: CardProps) {
         <div className={styles.cardInfo}>
           <p className={styles.cardName}>{entry.name}</p>
           {meta && <p className={styles.cardMeta}>{meta}</p>}
+          {linkedExp && (
+            <p className={styles.cardLinked}>
+              Referencia de: {expLabel(linkedExp)}
+            </p>
+          )}
         </div>
         <div className={styles.cardActions}>
           <button className={styles.actionBtn} onClick={onEdit} type="button">
@@ -89,6 +110,7 @@ interface FormProps {
   draft: EntryDraft;
   errors: Record<string, string>;
   isNew: boolean;
+  experiences: ExperienceEntry[];
   onChange: (updates: Partial<EntryDraft>) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -98,6 +120,7 @@ function EntryForm({
   draft,
   errors,
   isNew,
+  experiences,
   onChange,
   onSave,
   onCancel,
@@ -155,6 +178,29 @@ function EntryForm({
           />
         </div>
       </div>
+
+      {/* Experiencia vinculada (solo si hay experiencias cargadas) */}
+      {experiences.length > 0 && (
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="ref-exp">
+            ¿De qué trabajo es esta referencia?{' '}
+            <span className={styles.optional}>(opcional)</span>
+          </label>
+          <select
+            id="ref-exp"
+            className={styles.select}
+            value={draft.relatedExperienceId}
+            onChange={(e) => onChange({ relatedExperienceId: e.target.value })}
+          >
+            <option value="">Ninguno en particular</option>
+            {experiences.map((e) => (
+              <option key={e.id} value={e.id}>
+                {expLabel(e)}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Acciones */}
       <div className={styles.formActions}>
@@ -251,14 +297,12 @@ const ReferencesStep = forwardRef<StepRef>(function ReferencesStep(_, ref) {
     <div className={styles.step}>
       <p className={styles.help}>{HELP[draft.mode]}</p>
 
-      {/* Nota suave cuando está vacío */}
       {isEmpty && formMode.type === 'idle' && (
         <p className={styles.softNote}>
           Si no cargás referencias podés seguir igual. No es obligatorio.
         </p>
       )}
 
-      {/* Advertencia de formulario sin guardar */}
       {showUnsavedWarning && (
         <p role="alert" className={styles.unsavedWarning}>
           Tenés una referencia sin guardar. Guardala o cancelala antes de
@@ -266,7 +310,6 @@ const ReferencesStep = forwardRef<StepRef>(function ReferencesStep(_, ref) {
         </p>
       )}
 
-      {/* Lista de entradas existentes */}
       {!isEmpty && (
         <ul className={styles.entryList}>
           {draft.references.map((entry) => (
@@ -276,6 +319,7 @@ const ReferencesStep = forwardRef<StepRef>(function ReferencesStep(_, ref) {
                   draft={entryDraft}
                   errors={entryErrors}
                   isNew={false}
+                  experiences={draft.experience}
                   onChange={handleChange}
                   onSave={handleSave}
                   onCancel={handleCancel}
@@ -283,6 +327,7 @@ const ReferencesStep = forwardRef<StepRef>(function ReferencesStep(_, ref) {
               ) : (
                 <EntryCard
                   entry={entry}
+                  experiences={draft.experience}
                   onEdit={() => startEdit(entry)}
                   onRemove={() => handleRemove(entry.id)}
                 />
@@ -292,26 +337,24 @@ const ReferencesStep = forwardRef<StepRef>(function ReferencesStep(_, ref) {
         </ul>
       )}
 
-      {/* Formulario nueva entrada */}
       {formMode.type === 'new' && (
         <EntryForm
           draft={entryDraft}
           errors={entryErrors}
           isNew={true}
+          experiences={draft.experience}
           onChange={handleChange}
           onSave={handleSave}
           onCancel={handleCancel}
         />
       )}
 
-      {/* Botón agregar */}
       {formMode.type === 'idle' && (
         <button className={styles.addBtn} onClick={startNew} type="button">
           + Agregar referencia
         </button>
       )}
 
-      {/* Nota de privacidad */}
       <p className={styles.privacyNote}>
         Agregá referencias solo si tenés permiso para compartir sus datos. Todo
         queda guardado localmente en tu dispositivo.

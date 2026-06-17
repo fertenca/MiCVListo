@@ -90,6 +90,13 @@
   margin: 0;
 }
 
+.cardLinked {
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  margin: 0;
+  font-style: italic;
+}
+
 .cardActions {
   display: flex;
   gap: var(--space-xs);
@@ -190,6 +197,25 @@
 
 .inputError:focus {
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.select {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 /* ── Grilla de campos ──────────────────────────────────────────────────────── */

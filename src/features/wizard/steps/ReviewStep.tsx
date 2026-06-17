@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCVStore } from '../../cv-model';
-import type { LanguageLevel } from '../../cv-model';
+import type { AvailabilityData, ExperienceEntry, LanguageLevel } from '../../cv-model';
 import type { StepRef } from '..';
 import styles from './ReviewStep.module.css';
 
@@ -38,6 +38,37 @@ function SectionCard({ title, paso, children }: SectionCardProps) {
 
 function EmptyState({ text }: { text?: string }) {
   return <p className={styles.emptyState}>{text ?? 'Sin cargar · Opcional'}</p>;
+}
+
+function expLabel(e: ExperienceEntry): string {
+  return e.org ? `${e.role} — ${e.org}` : e.role;
+}
+
+function AvailabilitySummary({ avail }: { avail: AvailabilityData }) {
+  const all = [...avail.scheduleOptions, ...avail.modalityOptions];
+  return (
+    <div className={styles.availSummary}>
+      {all.length > 0 && (
+        <p className={styles.chipRow}>
+          {all.map((opt) => (
+            <span key={opt} className={styles.chip}>
+              {opt}
+            </span>
+          ))}
+        </p>
+      )}
+      {avail.location && (
+        <p className={styles.profileText}>Zona: {avail.location}</p>
+      )}
+      {avail.notes && (
+        <p className={styles.profileText}>
+          {avail.notes.length > 180
+            ? avail.notes.slice(0, 180) + '…'
+            : avail.notes}
+        </p>
+      )}
+    </div>
+  );
 }
 
 // ─── ReviewStep ───────────────────────────────────────────────────────────────
@@ -225,12 +256,12 @@ const ReviewStep = forwardRef<StepRef>(function ReviewStep(_, ref) {
 
       {/* ── Disponibilidad ──────────────────────────────────────────────── */}
       <SectionCard title="Disponibilidad" paso={9}>
-        {availability ? (
-          <p className={styles.profileText}>
-            {availability.length > 180
-              ? availability.slice(0, 180) + '…'
-              : availability}
-          </p>
+        {availability &&
+        (availability.scheduleOptions.length > 0 ||
+          availability.modalityOptions.length > 0 ||
+          availability.location ||
+          availability.notes) ? (
+          <AvailabilitySummary avail={availability} />
         ) : (
           <EmptyState />
         )}
@@ -240,14 +271,28 @@ const ReviewStep = forwardRef<StepRef>(function ReviewStep(_, ref) {
       <SectionCard title="Referencias" paso={10}>
         {references.length > 0 ? (
           <ul className={styles.dataList}>
-            {references.map((r) => (
-              <li key={r.id}>
-                <span className={styles.itemPrimary}>{r.name}</span>
-                {r.relation && (
-                  <span className={styles.itemSecondary}> · {r.relation}</span>
-                )}
-              </li>
-            ))}
+            {references.map((r) => {
+              const linked = r.relatedExperienceId
+                ? experience.find((e) => e.id === r.relatedExperienceId)
+                : null;
+              return (
+                <li key={r.id}>
+                  <span className={styles.itemPrimary}>{r.name}</span>
+                  {r.relation && (
+                    <span className={styles.itemSecondary}>
+                      {' '}
+                      · {r.relation}
+                    </span>
+                  )}
+                  {linked && (
+                    <span className={styles.itemLinked}>
+                      {' '}
+                      · {expLabel(linked)}
+                    </span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <EmptyState />

@@ -14,6 +14,11 @@ type FormMode =
 interface EntryDraft {
   label: string;
   category: string;
+  hasCertificate: boolean;
+  certName: string;
+  certInstitution: string;
+  certYear: string;
+  certVerificationUrl: string;
 }
 
 // ─── Textos y etiquetas ───────────────────────────────────────────────────────
@@ -29,12 +34,29 @@ const HELP: Record<CVMode, string> = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const DEFAULT_DRAFT: EntryDraft = { label: '', category: '' };
+const DEFAULT_DRAFT: EntryDraft = {
+  label: '',
+  category: '',
+  hasCertificate: false,
+  certName: '',
+  certInstitution: '',
+  certYear: '',
+  certVerificationUrl: '',
+};
 
 function draftToEntry(d: EntryDraft): Omit<SkillEntry, 'id'> {
   return {
     label: d.label.trim(),
     category: d.category.trim() || undefined,
+    certificate: d.hasCertificate
+      ? {
+          hasCertificate: true,
+          name: d.certName.trim() || undefined,
+          institution: d.certInstitution.trim() || undefined,
+          year: d.certYear.trim() || undefined,
+          verificationUrl: d.certVerificationUrl.trim() || undefined,
+        }
+      : undefined,
   };
 }
 
@@ -42,6 +64,11 @@ function entryToDraft(e: SkillEntry): EntryDraft {
   return {
     label: e.label,
     category: e.category ?? '',
+    hasCertificate: e.certificate?.hasCertificate ?? false,
+    certName: e.certificate?.name ?? '',
+    certInstitution: e.certificate?.institution ?? '',
+    certYear: e.certificate?.year ?? '',
+    certVerificationUrl: e.certificate?.verificationUrl ?? '',
   };
 }
 
@@ -54,6 +81,11 @@ interface CardProps {
 }
 
 function EntryCard({ entry, onEdit, onRemove }: CardProps) {
+  const certLabel =
+    entry.certificate?.hasCertificate && entry.certificate.name
+      ? entry.certificate.name
+      : null;
+
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
@@ -61,6 +93,9 @@ function EntryCard({ entry, onEdit, onRemove }: CardProps) {
           <p className={styles.cardLabel}>{entry.label}</p>
           {entry.category && (
             <p className={styles.cardCategory}>{entry.category}</p>
+          )}
+          {certLabel && (
+            <p className={styles.cardCert}>Certificado: {certLabel}</p>
           )}
         </div>
         <div className={styles.cardActions}>
@@ -137,6 +172,105 @@ function EntryForm({
         />
       </div>
 
+      {/* Certificado */}
+      <div className={styles.field}>
+        <span className={styles.label}>
+          ¿Tenés certificado, curso o título relacionado?
+        </span>
+        <div className={styles.certToggle}>
+          <label className={styles.radioLabel}>
+            <input
+              type="radio"
+              name="skill-cert"
+              checked={!draft.hasCertificate}
+              onChange={() =>
+                onChange({
+                  hasCertificate: false,
+                  certName: '',
+                  certInstitution: '',
+                  certYear: '',
+                  certVerificationUrl: '',
+                })
+              }
+            />
+            No
+          </label>
+          <label className={styles.radioLabel}>
+            <input
+              type="radio"
+              name="skill-cert"
+              checked={draft.hasCertificate}
+              onChange={() => onChange({ hasCertificate: true })}
+            />
+            Sí
+          </label>
+        </div>
+      </div>
+
+      {draft.hasCertificate && (
+        <div className={styles.certFields}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="skill-cert-name">
+              Nombre del certificado, curso o título{' '}
+              <span className={styles.optional}>(opcional)</span>
+            </label>
+            <input
+              id="skill-cert-name"
+              className={styles.input}
+              type="text"
+              value={draft.certName}
+              onChange={(e) => onChange({ certName: e.target.value })}
+              placeholder="Ej: Curso de Excel inicial · Capacitación en atención al cliente"
+            />
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="skill-cert-inst">
+                Institución{' '}
+                <span className={styles.optional}>(opcional)</span>
+              </label>
+              <input
+                id="skill-cert-inst"
+                className={styles.input}
+                type="text"
+                value={draft.certInstitution}
+                onChange={(e) => onChange({ certInstitution: e.target.value })}
+                placeholder="Ej: UTN · Coursera · Municipalidad"
+              />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="skill-cert-year">
+                Año <span className={styles.optional}>(opcional)</span>
+              </label>
+              <input
+                id="skill-cert-year"
+                className={styles.input}
+                type="text"
+                value={draft.certYear}
+                onChange={(e) => onChange({ certYear: e.target.value })}
+                placeholder="Ej: 2024"
+              />
+            </div>
+          </div>
+
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="skill-cert-url">
+              Link o código de verificación{' '}
+              <span className={styles.optional}>(opcional)</span>
+            </label>
+            <input
+              id="skill-cert-url"
+              className={styles.input}
+              type="text"
+              value={draft.certVerificationUrl}
+              onChange={(e) => onChange({ certVerificationUrl: e.target.value })}
+              placeholder="Ej: https://... o código del certificado"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Acciones */}
       <div className={styles.formActions}>
         <button className={styles.btnPrimary} onClick={onSave} type="button">
@@ -194,7 +328,7 @@ const SkillsStep = forwardRef<StepRef>(function SkillsStep(_, ref) {
     }
     const entry = draftToEntry(entryDraft);
     if (formMode.type === 'new') {
-      addSkill(entry.label, entry.category);
+      addSkill(entry);
     } else if (formMode.type === 'edit') {
       updateSkill(formMode.id, entry);
     }
@@ -232,7 +366,6 @@ const SkillsStep = forwardRef<StepRef>(function SkillsStep(_, ref) {
     <div className={styles.step}>
       <p className={styles.help}>{HELP[draft.mode]}</p>
 
-      {/* Nota suave cuando está vacío */}
       {isEmpty && formMode.type === 'idle' && (
         <p className={styles.softNote}>
           Agregar algunas habilidades ayuda a que quien lea tu CV entienda
@@ -240,7 +373,6 @@ const SkillsStep = forwardRef<StepRef>(function SkillsStep(_, ref) {
         </p>
       )}
 
-      {/* Advertencia de formulario sin guardar */}
       {showUnsavedWarning && (
         <p role="alert" className={styles.unsavedWarning}>
           Tenés una habilidad sin guardar. Guardala o cancelala antes de
@@ -248,7 +380,6 @@ const SkillsStep = forwardRef<StepRef>(function SkillsStep(_, ref) {
         </p>
       )}
 
-      {/* Lista de entradas existentes */}
       {!isEmpty && (
         <ul className={styles.entryList}>
           {draft.skills.map((entry) => (
@@ -274,7 +405,6 @@ const SkillsStep = forwardRef<StepRef>(function SkillsStep(_, ref) {
         </ul>
       )}
 
-      {/* Formulario nueva entrada */}
       {formMode.type === 'new' && (
         <EntryForm
           draft={entryDraft}
@@ -286,7 +416,6 @@ const SkillsStep = forwardRef<StepRef>(function SkillsStep(_, ref) {
         />
       )}
 
-      {/* Botón agregar */}
       {formMode.type === 'idle' && (
         <button className={styles.addBtn} onClick={startNew} type="button">
           + Agregar habilidad

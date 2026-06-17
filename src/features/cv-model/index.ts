@@ -12,6 +12,9 @@ export type {
   SkillEntry,
   LanguageEntry,
   ReferenceEntry,
+  AvailabilityData,
+  SkillCertificate,
+  LanguageCertificate,
   CVMeta,
   CVDocument,
 } from './types';
