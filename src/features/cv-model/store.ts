@@ -93,6 +93,7 @@ export interface CVStore {
   // Habilidades (array)
   /** Agrega una habilidad y devuelve su id. */
   addSkill: (label: string, category?: string) => string;
+  updateSkill: (id: string, data: Partial<Omit<SkillEntry, 'id'>>) => void;
   removeSkill: (id: string) => void;
   /** Reemplaza el array completo (útil para el selector por chips). */
   setSkills: (skills: SkillEntry[]) => void;
@@ -305,6 +306,20 @@ export const useCVStore = create<CVStore>()(
         );
         return id;
       },
+
+      updateSkill: (id, data) =>
+        set((s) =>
+          s.draft
+            ? {
+                draft: touch({
+                  ...s.draft,
+                  skills: s.draft.skills.map((sk) =>
+                    sk.id === id ? { ...sk, ...data } : sk,
+                  ),
+                }),
+              }
+            : s,
+        ),
 
       removeSkill: (id) =>
         set((s) =>
