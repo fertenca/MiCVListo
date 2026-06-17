@@ -203,17 +203,31 @@ const ReviewStep = forwardRef<StepRef>(function ReviewStep(_, ref) {
       <SectionCard title="Cursos y capacitaciones" paso={6}>
         {courses.length > 0 ? (
           <ul className={styles.dataList}>
-            {courses.map((c) => (
-              <li key={c.id}>
-                <span className={styles.itemPrimary}>{c.name}</span>
-                {c.institution && (
-                  <span className={styles.itemSecondary}>
-                    {' '}
-                    · {c.institution}
-                  </span>
-                )}
-              </li>
-            ))}
+            {courses.map((c) => {
+              const cert = c.certificate?.hasCertificate
+                ? [
+                    c.certificate.name,
+                    c.certificate.institution,
+                    c.certificate.year,
+                  ]
+                    .filter(Boolean)
+                    .join(' — ')
+                : null;
+              return (
+                <li key={c.id}>
+                  <span className={styles.itemPrimary}>{c.name}</span>
+                  {c.institution && (
+                    <span className={styles.itemSecondary}>
+                      {' '}
+                      · {c.institution}
+                    </span>
+                  )}
+                  {cert && (
+                    <p className={styles.itemCert}>Certificado: {cert}</p>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <EmptyState />

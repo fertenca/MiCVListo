@@ -57,6 +57,7 @@ export interface CourseEntry {
   name: string;
   institution?: string;
   year?: string;
+  certificate?: SkillCertificate;
 }
 
 export interface SkillCertificate {
