@@ -4,6 +4,7 @@ import { useCVStore } from '../../features/cv-model';
 import { WIZARD_STEPS, getStepTitle } from '../../features/wizard';
 import type { StepRef } from '../../features/wizard';
 import PersonalStep from '../../features/wizard/steps/PersonalStep';
+import PhotoStep from '../../features/wizard/steps/PhotoStep';
 import ProfileStep from '../../features/wizard/steps/ProfileStep';
 import ExperienceStep from '../../features/wizard/steps/ExperienceStep';
 import EducationStep from '../../features/wizard/steps/EducationStep';
@@ -103,6 +104,8 @@ function WizardShell() {
 
         {step.id === 'personal' ? (
           <PersonalStep ref={stepRef} />
+        ) : step.id === 'foto' ? (
+          <PhotoStep ref={stepRef} />
         ) : step.id === 'perfil' ? (
           <ProfileStep ref={stepRef} />
         ) : step.id === 'experiencia' ? (
