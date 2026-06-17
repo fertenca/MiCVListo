@@ -1,23 +1,46 @@
-/* ── Botón disparador ──────────────────────────────────────────────────────── */
+/* ── Caja de ayuda (estado cerrado) ────────────────────────────────────────── */
 
-.triggerBtn {
-  align-self: flex-start;
-  background: none;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-primary);
-  font-size: 0.9375rem;
-  font-family: inherit;
-  padding: var(--space-xs) var(--space-md);
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    background-color 0.15s ease;
+.helperBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-accent-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
-.triggerBtn:hover {
-  border-color: var(--color-primary);
-  background-color: var(--color-accent-soft);
+.helperTitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.helperDesc {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.helperBtn {
+  align-self: flex-start;
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  padding: var(--space-xs) var(--space-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-top: var(--space-xs);
+  transition: background-color 0.15s ease;
+}
+
+.helperBtn:hover {
+  background-color: var(--color-primary-hover);
 }
 
 /* ── Panel expandido ───────────────────────────────────────────────────────── */

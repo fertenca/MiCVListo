@@ -56,9 +56,19 @@ export function ProfileHelper({ mode, currentText, onReplace }: Props) {
 
   if (!open) {
     return (
-      <button type="button" className={styles.triggerBtn} onClick={() => setOpen(true)}>
-        No sé qué poner
-      </button>
+      <div className={styles.helperBox}>
+        <p className={styles.helperTitle}>¿Te cuesta escribir tu perfil?</p>
+        <p className={styles.helperDesc}>
+          Elegí algunas opciones y armamos un resumen breve que después podés modificar.
+        </p>
+        <button
+          type="button"
+          className={styles.helperBtn}
+          onClick={() => setOpen(true)}
+        >
+          Ayudarme a escribir mi perfil
+        </button>
+      </div>
     );
   }
 

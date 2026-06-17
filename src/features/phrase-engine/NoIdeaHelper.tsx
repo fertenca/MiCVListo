@@ -40,13 +40,20 @@ export function NoIdeaHelper({ onAdd }: Props) {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        className={styles.triggerBtn}
-        onClick={() => setOpen(true)}
-      >
-        No sé qué poner
-      </button>
+      <div className={styles.helperBox}>
+        <p className={styles.helperTitle}>¿No sabés qué tareas poner?</p>
+        <p className={styles.helperDesc}>
+          Marcá tareas que hiciste y las convertimos en frases más prolijas para tu CV.
+          Después podés editarlas.
+        </p>
+        <button
+          type="button"
+          className={styles.helperBtn}
+          onClick={() => setOpen(true)}
+        >
+          No sé qué poner
+        </button>
+      </div>
     );
   }
 
