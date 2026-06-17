@@ -12,6 +12,7 @@ import SkillsStep from '../../features/wizard/steps/SkillsStep';
 import LanguagesStep from '../../features/wizard/steps/LanguagesStep';
 import AvailabilityStep from '../../features/wizard/steps/AvailabilityStep';
 import ReferencesStep from '../../features/wizard/steps/ReferencesStep';
+import ReviewStep from '../../features/wizard/steps/ReviewStep';
 import styles from './WizardShell.module.css';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -118,6 +119,8 @@ function WizardShell() {
           <AvailabilityStep ref={stepRef} />
         ) : step.id === 'referencias' ? (
           <ReferencesStep ref={stepRef} />
+        ) : step.id === 'revision' ? (
+          <ReviewStep ref={stepRef} />
         ) : (
           <div className={styles.stepPlaceholder}>
             <span className={styles.placeholderBadge}>
