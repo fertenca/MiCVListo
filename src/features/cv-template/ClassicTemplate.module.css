@@ -1,0 +1,329 @@
+/*
+ * Estilos de la plantilla Clásica.
+ * Usa valores hardcodeados (no variables del app) para mantener
+ * portabilidad futura hacia PDF/print.
+ */
+
+/* ── Documento ─────────────────────────────────────────────────────────────── */
+
+.cv {
+  background: #ffffff;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 48px 56px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.9375rem;
+  color: #1c2430;
+  line-height: 1.55;
+}
+
+/* ── Encabezado ────────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #e2e6ec;
+  margin-bottom: 24px;
+}
+
+.headerWithPhoto {
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.photo {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid #e2e6ec;
+}
+
+.headerInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.name {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1c2430;
+  line-height: 1.2;
+}
+
+.headline {
+  margin: 0;
+  font-size: 1rem;
+  color: #5b6675;
+}
+
+.contacts {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #5b6675;
+}
+
+.links {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #2563eb;
+}
+
+/* ── Secciones ─────────────────────────────────────────────────────────────── */
+
+.section {
+  margin-bottom: 22px;
+}
+
+.sectionTitle {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #2563eb;
+  border-bottom: 1.5px solid #2563eb;
+  padding-bottom: 5px;
+  margin: 0 0 14px 0;
+}
+
+/* ── Perfil ────────────────────────────────────────────────────────────────── */
+
+.profileText {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: #1c2430;
+}
+
+/* ── Lista de entradas ─────────────────────────────────────────────────────── */
+
+.entryList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Entrada con bullets (experiencia) */
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.entryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.entryTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+  flex: 1;
+}
+
+.entryRole {
+  font-weight: 600;
+  color: #1c2430;
+}
+
+.entryOrg {
+  color: #5b6675;
+}
+
+.informalBadge {
+  font-size: 0.6875rem;
+  color: #5b6675;
+  background-color: #f7f8fa;
+  border: 1px solid #e2e6ec;
+  border-radius: 999px;
+  padding: 1px 7px;
+  align-self: center;
+}
+
+.entryDates {
+  font-size: 0.8125rem;
+  color: #5b6675;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bullets {
+  margin: 2px 0 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bullets li {
+  font-size: 0.875rem;
+  color: #1c2430;
+  line-height: 1.5;
+}
+
+/* Fila compacta (educación, cursos, idiomas, referencias) */
+.entryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.entryRowMain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+  flex: 1;
+}
+
+.entryMeta {
+  font-size: 0.8125rem;
+  color: #5b6675;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.certBadge {
+  font-size: 0.75rem;
+  color: #166534;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+  padding: 1px 8px;
+  align-self: center;
+}
+
+/* ── Habilidades ───────────────────────────────────────────────────────────── */
+
+.skillGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skillGroup {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.skillCategory {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #5b6675;
+  min-width: 140px;
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+
+.skillChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  flex: 1;
+}
+
+.skillChip {
+  font-size: 0.8125rem;
+  color: #1c2430;
+  background-color: #f7f8fa;
+  border: 1px solid #e2e6ec;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.skillCert {
+  color: #166534;
+  font-weight: 700;
+}
+
+/* ── Disponibilidad ────────────────────────────────────────────────────────── */
+
+.availGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.availRow {
+  display: flex;
+  gap: 12px;
+  font-size: 0.875rem;
+  align-items: flex-start;
+}
+
+.availLabel {
+  font-weight: 600;
+  color: #5b6675;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+/* ── Referencias ───────────────────────────────────────────────────────────── */
+
+.refLinked {
+  font-size: 0.8125rem;
+  color: #5b6675;
+  font-style: italic;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .cv {
+    padding: 28px 20px;
+    box-shadow: none;
+  }
+
+  .name {
+    font-size: 1.5rem;
+  }
+
+  .headerWithPhoto {
+    gap: 14px;
+  }
+
+  .photo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .skillCategory {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .skillGroup {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .entryHeader {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .entryRow {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .entryMeta {
+    white-space: normal;
+  }
+}

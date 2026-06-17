@@ -1,21 +1,44 @@
-import styles from './placeholder.module.css';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCVStore } from '../features/cv-model';
+import { ClassicTemplate } from '../features/cv-template/ClassicTemplate';
+import styles from './Preview.module.css';
 
-/**
- * Ruta de vista previa + descarga. En la Fase 0 es un placeholder navegable.
- * La preview y la exportación a PDF (misma plantilla para ver y descargar,
- * buscando consistencia visual) llegan en las Fases 6–8.
- */
 function Preview() {
+  const navigate = useNavigate();
+  const draft = useCVStore((s) => s.draft);
+
+  useEffect(() => {
+    if (!draft) navigate('/crear', { replace: true });
+  }, [draft, navigate]);
+
+  if (!draft) return null;
+
   return (
-    <section className={styles.placeholder}>
-      <span className={styles.badge}>Próximamente · Fases 6–8</span>
-      <h1>Vista previa de tu CV</h1>
-      <p className={styles.text}>
-        Vas a ver tu CV antes de descargarlo y vas a poder elegir entre las
-        plantillas Clásica, Moderna y Primer empleo. La vista previa y la
-        descarga usan la misma plantilla, buscando consistencia visual.
-      </p>
-    </section>
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
+        <div>
+          <h1 className={styles.heading}>Vista previa de tu CV</h1>
+          <p className={styles.subtext}>
+            Revisá cómo está quedando. Si querés cambiar algo, podés volver a
+            editar.
+          </p>
+        </div>
+        <div className={styles.actions}>
+          <Link to="/wizard?paso=11" className={styles.btnEdit}>
+            Volver a editar
+          </Link>
+          <button type="button" className={styles.btnPdf} disabled>
+            Descargar PDF
+            <span className={styles.btnPdfNote}>Próximamente</span>
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.previewFrame}>
+        <ClassicTemplate doc={draft} />
+      </div>
+    </div>
   );
 }
 
