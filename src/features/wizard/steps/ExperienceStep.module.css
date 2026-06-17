@@ -299,6 +299,24 @@
   white-space: nowrap;
 }
 
+/* ── Sección de referencia opcional ───────────────────────────────────────── */
+
+.refSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.refFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
 /* ── Acciones del formulario ───────────────────────────────────────────────── */
 
 .formActions {

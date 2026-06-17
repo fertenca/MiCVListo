@@ -21,6 +21,20 @@ interface EntryDraft {
   bulletsText: string;
 }
 
+interface RefDraft {
+  addRef: boolean;
+  name: string;
+  relation: string;
+  phone: string;
+}
+
+const DEFAULT_REF_DRAFT: RefDraft = {
+  addRef: false,
+  name: '',
+  relation: '',
+  phone: '',
+};
+
 // ─── Textos por modo ──────────────────────────────────────────────────────────
 
 const HELP: Record<CVMode, string> = {
@@ -130,6 +144,8 @@ interface FormProps {
   draft: EntryDraft;
   errors: Record<string, string>;
   isNew: boolean;
+  refDraft: RefDraft;
+  onRefChange: (updates: Partial<RefDraft>) => void;
   onChange: (updates: Partial<EntryDraft>) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -139,6 +155,8 @@ function EntryForm({
   draft,
   errors,
   isNew,
+  refDraft,
+  onRefChange,
   onChange,
   onSave,
   onCancel,
@@ -272,6 +290,93 @@ function EntryForm({
         />
       </div>
 
+      {/* Referencia relacionada */}
+      <div className={styles.refSection}>
+        <div className={styles.field}>
+          <span className={styles.label}>
+            ¿Querés agregar una referencia relacionada con esta experiencia?{' '}
+            <span className={styles.optional}>(opcional)</span>
+          </span>
+          <div className={styles.typeToggle}>
+            <label className={styles.radioLabel}>
+              <input
+                type="radio"
+                name="exp-ref"
+                checked={!refDraft.addRef}
+                onChange={() =>
+                  onRefChange({
+                    addRef: false,
+                    name: '',
+                    relation: '',
+                    phone: '',
+                  })
+                }
+              />
+              No
+            </label>
+            <label className={styles.radioLabel}>
+              <input
+                type="radio"
+                name="exp-ref"
+                checked={refDraft.addRef}
+                onChange={() => onRefChange({ addRef: true })}
+              />
+              Sí
+            </label>
+          </div>
+        </div>
+
+        {refDraft.addRef && (
+          <div className={styles.refFields}>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="exp-ref-name">
+                Nombre de la referencia{' '}
+                <span className={styles.optional}>(opcional)</span>
+              </label>
+              <input
+                id="exp-ref-name"
+                className={styles.input}
+                type="text"
+                value={refDraft.name}
+                onChange={(e) => onRefChange({ name: e.target.value })}
+                placeholder="Ej: María González · Juan Pérez"
+                autoFocus
+              />
+            </div>
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="exp-ref-relation">
+                  Relación{' '}
+                  <span className={styles.optional}>(opcional)</span>
+                </label>
+                <input
+                  id="exp-ref-relation"
+                  className={styles.input}
+                  type="text"
+                  value={refDraft.relation}
+                  onChange={(e) => onRefChange({ relation: e.target.value })}
+                  placeholder="Ej: Ex jefa · Encargado · Cliente"
+                />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="exp-ref-phone">
+                  Teléfono{' '}
+                  <span className={styles.optional}>(opcional)</span>
+                </label>
+                <input
+                  id="exp-ref-phone"
+                  className={styles.input}
+                  type="tel"
+                  value={refDraft.phone}
+                  onChange={(e) => onRefChange({ phone: e.target.value })}
+                  placeholder="Ej: 11 5555-1234"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Acciones */}
       <div className={styles.formActions}>
         <button className={styles.btnPrimary} onClick={onSave} type="button">
@@ -292,11 +397,14 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
   const addExperience = useCVStore((s) => s.addExperience);
   const updateExperience = useCVStore((s) => s.updateExperience);
   const removeExperience = useCVStore((s) => s.removeExperience);
+  const addReference = useCVStore((s) => s.addReference);
+  const updateReference = useCVStore((s) => s.updateReference);
 
   const [formMode, setFormMode] = useState<FormMode>({ type: 'idle' });
   const [entryDraft, setEntryDraft] = useState<EntryDraft>(() =>
     defaultDraft(draft.mode),
   );
+  const [refDraft, setRefDraft] = useState<RefDraft>(DEFAULT_REF_DRAFT);
   const [entryErrors, setEntryErrors] = useState<Record<string, string>>({});
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
 
@@ -312,6 +420,7 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
 
   function startNew() {
     setEntryDraft(defaultDraft(draft.mode));
+    setRefDraft(DEFAULT_REF_DRAFT);
     setEntryErrors({});
     setShowUnsavedWarning(false);
     setFormMode({ type: 'new' });
@@ -319,6 +428,19 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
 
   function startEdit(entry: ExperienceEntry) {
     setEntryDraft(entryToDraft(entry));
+    const existing = draft.references.find(
+      (r) => r.relatedExperienceId === entry.id,
+    );
+    setRefDraft(
+      existing
+        ? {
+            addRef: true,
+            name: existing.name,
+            relation: existing.relation ?? '',
+            phone: existing.phone ?? '',
+          }
+        : DEFAULT_REF_DRAFT,
+    );
     setEntryErrors({});
     setShowUnsavedWarning(false);
     setFormMode({ type: 'edit', id: entry.id });
@@ -330,18 +452,50 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
       return;
     }
     const entry = draftToEntry(entryDraft);
+
     if (formMode.type === 'new') {
-      addExperience(entry);
+      const expId = addExperience(entry);
+      if (refDraft.addRef && refDraft.name.trim()) {
+        addReference({
+          name: refDraft.name.trim(),
+          relation: refDraft.relation.trim() || undefined,
+          phone: refDraft.phone.trim() || undefined,
+          relatedExperienceId: expId,
+        });
+      }
     } else if (formMode.type === 'edit') {
       updateExperience(formMode.id, entry);
+      if (refDraft.addRef && refDraft.name.trim()) {
+        const existing = draft.references.find(
+          (r) => r.relatedExperienceId === formMode.id,
+        );
+        if (existing) {
+          updateReference(existing.id, {
+            name: refDraft.name.trim(),
+            relation: refDraft.relation.trim() || undefined,
+            phone: refDraft.phone.trim() || undefined,
+            relatedExperienceId: formMode.id,
+          });
+        } else {
+          addReference({
+            name: refDraft.name.trim(),
+            relation: refDraft.relation.trim() || undefined,
+            phone: refDraft.phone.trim() || undefined,
+            relatedExperienceId: formMode.id,
+          });
+        }
+      }
     }
+
     setFormMode({ type: 'idle' });
     setEntryErrors({});
+    setRefDraft(DEFAULT_REF_DRAFT);
   }
 
   function handleCancel() {
     setFormMode({ type: 'idle' });
     setEntryErrors({});
+    setRefDraft(DEFAULT_REF_DRAFT);
     setShowUnsavedWarning(false);
   }
 
@@ -349,6 +503,7 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
     removeExperience(id);
     if (formMode.type === 'edit' && formMode.id === id) {
       setFormMode({ type: 'idle' });
+      setRefDraft(DEFAULT_REF_DRAFT);
     }
   }
 
@@ -363,6 +518,10 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
     }
   }
 
+  function handleRefChange(updates: Partial<RefDraft>) {
+    setRefDraft((prev) => ({ ...prev, ...updates }));
+  }
+
   return (
     <div className={styles.step}>
       {/* Mensaje tranquilizador para primer empleo */}
@@ -375,7 +534,6 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
 
       <p className={styles.help}>{HELP[draft.mode]}</p>
 
-      {/* Advertencia de formulario sin guardar */}
       {showUnsavedWarning && (
         <p role="alert" className={styles.unsavedWarning}>
           Tenés una experiencia sin guardar. Guardala o cancelala antes de
@@ -383,7 +541,6 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
         </p>
       )}
 
-      {/* Lista de entradas existentes */}
       {draft.experience.length > 0 && (
         <ul className={styles.entryList}>
           {draft.experience.map((entry) => (
@@ -393,6 +550,8 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
                   draft={entryDraft}
                   errors={entryErrors}
                   isNew={false}
+                  refDraft={refDraft}
+                  onRefChange={handleRefChange}
                   onChange={handleChange}
                   onSave={handleSave}
                   onCancel={handleCancel}
@@ -409,19 +568,19 @@ const ExperienceStep = forwardRef<StepRef>(function ExperienceStep(_, ref) {
         </ul>
       )}
 
-      {/* Formulario nueva entrada */}
       {formMode.type === 'new' && (
         <EntryForm
           draft={entryDraft}
           errors={entryErrors}
           isNew={true}
+          refDraft={refDraft}
+          onRefChange={handleRefChange}
           onChange={handleChange}
           onSave={handleSave}
           onCancel={handleCancel}
         />
       )}
 
-      {/* Botón agregar (solo cuando no hay formulario abierto) */}
       {formMode.type === 'idle' && (
         <button className={styles.addBtn} onClick={startNew} type="button">
           + Agregar experiencia
