@@ -388,6 +388,9 @@ const CoursesStep = forwardRef<StepRef>(function CoursesStep(_, ref) {
   return (
     <div className={styles.step}>
       <p className={styles.help}>{HELP[draft.mode]}</p>
+      <p className={styles.softNote}>
+        Si querés indicar idiomas, más adelante vas a tener una sección específica para cargarlos con tu nivel.
+      </p>
 
       {isEmpty && formMode.type === 'idle' && (
         <p className={styles.softNote}>

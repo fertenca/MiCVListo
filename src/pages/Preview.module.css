@@ -63,23 +63,30 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  background-color: var(--color-border);
-  color: var(--color-text-muted);
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
   font-size: 0.9375rem;
   font-family: inherit;
   font-weight: 500;
   padding: var(--space-sm) var(--space-lg);
   border: none;
   border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btnPdf:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btnPdf:disabled {
+  opacity: 0.65;
   cursor: not-allowed;
-  opacity: 0.75;
 }
 
 .btnPdfNote {
   font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* ── Marco de la preview ───────────────────────────────────────────────────── */
