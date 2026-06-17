@@ -311,6 +311,28 @@
   border-radius: var(--radius-md);
 }
 
+.refExistingInfo {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.refActionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.unlinkNote {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #92400e;
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+}
+
 .refFields {
   display: flex;
   flex-direction: column;
