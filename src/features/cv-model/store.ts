@@ -66,7 +66,7 @@ export interface CVStore {
   updatePersonal: (data: Partial<PersonalInfo>) => void;
 
   // Perfil / resumen
-  setProfile: (profile: string) => void;
+  setProfile: (profile: string | undefined) => void;
 
   // Experiencia (array)
   /** Agrega una entrada y devuelve su id generado. */
