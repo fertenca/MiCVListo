@@ -3,7 +3,8 @@ import { useCVStore } from '../../cv-model';
 import type { CVMode, ExperienceEntry } from '../../cv-model';
 import type { StepRef } from '..';
 import { NoIdeaHelper } from '../../phrase-engine';
-import { validateExperienceDates } from '../softValidation';
+import { experienceDateHints } from '../softValidation';
+import { useValidationHints, type HintType } from '../../analytics';
 import styles from './ExperienceStep.module.css';
 
 const BULLETS_LONG_THRESHOLD = 7;
@@ -329,7 +330,7 @@ function EntryForm({
   onSave,
   onCancel,
 }: FormProps) {
-  const dateHints = validateExperienceDates(
+  const dateHints = experienceDateHints(
     draft.startDate,
     draft.endDate,
     draft.isCurrentJob,
@@ -338,6 +339,17 @@ function EntryForm({
     .split('\n')
     .map((s) => s.trim())
     .filter(Boolean).length;
+
+  const hintCodes: HintType[] = [];
+  if (dateHints.some((h) => h.code === 'invalid_date')) {
+    hintCodes.push('invalid_date');
+  }
+  if (dateHints.some((h) => h.code === 'end_before_start')) {
+    hintCodes.push('end_before_start');
+  }
+  if (bulletCount === 0) hintCodes.push('empty_experience');
+  if (bulletCount > BULLETS_LONG_THRESHOLD) hintCodes.push('long_experience');
+  useValidationHints('experiencia', hintCodes);
 
   return (
     <div className={styles.entryForm}>
@@ -453,8 +465,8 @@ function EntryForm({
       {dateHints.length > 0 && (
         <ul className={styles.softHints}>
           {dateHints.map((hint) => (
-            <li key={hint} className={styles.softHint}>
-              {hint}
+            <li key={hint.message} className={styles.softHint}>
+              {hint.message}
             </li>
           ))}
         </ul>

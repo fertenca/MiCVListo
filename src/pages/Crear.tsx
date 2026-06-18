@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCVStore } from '../features/cv-model';
 import type { CVMode } from '../features/cv-model';
+import { track, useTrackPageView } from '../features/analytics';
 import styles from './Crear.module.css';
 
 const MODES: { id: CVMode; title: string; description: string }[] = [
@@ -31,8 +32,10 @@ function Crear() {
   const initDraft = useCVStore((s) => s.initDraft);
   const resetDraft = useCVStore((s) => s.resetDraft);
   const [showNew, setShowNew] = useState(false);
+  useTrackPageView('create_page_viewed');
 
   function handleModeSelect(mode: CVMode) {
+    track('mode_selected', { mode });
     if (showNew) {
       resetDraft(mode);
     } else {

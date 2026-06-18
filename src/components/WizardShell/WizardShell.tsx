@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCVStore } from '../../features/cv-model';
 import { WIZARD_STEPS, getStepTitle } from '../../features/wizard';
 import type { StepRef } from '../../features/wizard';
+import { track } from '../../features/analytics';
 import PersonalStep from '../../features/wizard/steps/PersonalStep';
 import PhotoStep from '../../features/wizard/steps/PhotoStep';
 import ProfileStep from '../../features/wizard/steps/ProfileStep';
@@ -41,6 +42,17 @@ function WizardShell() {
     if (!draft) navigate('/crear', { replace: true });
   }, [draft, navigate]);
 
+  // Registra la vista de cada paso del wizard (anónimo).
+  useEffect(() => {
+    const raw = parseInt(searchParams.get('paso') ?? '1', 10);
+    const idx = Number.isNaN(raw)
+      ? 0
+      : Math.max(0, Math.min(raw - 1, WIZARD_STEPS.length - 1));
+    const id = WIZARD_STEPS[idx].id;
+    track('wizard_step_viewed', { stepId: id });
+    if (id === 'revision') track('review_viewed');
+  }, [searchParams]);
+
   if (!draft) return null;
 
   const rawPaso = parseInt(searchParams.get('paso') ?? '1', 10);
@@ -57,6 +69,7 @@ function WizardShell() {
   }
 
   function handleNext() {
+    track('wizard_step_next_clicked', { stepId: step.id });
     if (stepRef.current) {
       const valid = stepRef.current.validate();
       if (!valid) return;
@@ -149,7 +162,10 @@ function WizardShell() {
           {!isFirst && (
             <button
               className={styles.btnSecondary}
-              onClick={() => goTo(stepIndex - 1)}
+              onClick={() => {
+                track('wizard_step_back_clicked', { stepId: step.id });
+                goTo(stepIndex - 1);
+              }}
               type="button"
             >
               Atrás

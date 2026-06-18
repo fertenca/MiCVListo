@@ -6,6 +6,7 @@ import Wizard from '../pages/Wizard';
 import Preview from '../pages/Preview';
 import Privacy from '../pages/Privacy';
 import Guia from '../pages/Guia';
+import Admin from '../pages/Admin';
 import NotFound from '../pages/NotFound';
 
 export const router = createBrowserRouter([
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
       { path: 'vista-previa', element: <Preview /> },
       { path: 'privacidad', element: <Privacy /> },
       { path: 'guia', element: <Guia /> },
+      { path: 'admin', element: <Admin /> },
       { path: '*', element: <NotFound /> },
     ],
   },

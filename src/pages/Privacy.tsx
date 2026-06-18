@@ -1,6 +1,8 @@
+import { useTrackPageView } from '../features/analytics';
 import styles from './Privacy.module.css';
 
 function Privacy() {
+  useTrackPageView('privacy_viewed');
   return (
     <section className={styles.page}>
       <h1 className={styles.title}>Privacidad</h1>
@@ -62,6 +64,18 @@ function Privacy() {
         <p>
           No hay anuncios en esta app. No vendemos, compartimos ni usamos tus
           datos con fines publicitarios.
+        </p>
+      </div>
+
+      <hr className={styles.divider} />
+
+      <div className={styles.block}>
+        <h2 className={styles.blockTitle}>Métricas anónimas de uso</h2>
+        <p>
+          También registramos métricas anónimas de uso para saber si la
+          herramienta funciona bien y mejorarla. Por ejemplo, podemos saber qué
+          pasos se visitan o si se descargó un PDF, pero no guardamos el
+          contenido del CV, tu nombre, email, teléfono, foto ni referencias.
         </p>
       </div>
 

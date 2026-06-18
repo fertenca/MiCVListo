@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { experienceCategories } from '../../content/suggestions/experienceSuggestions';
 import { generateExperienceBullets } from './engine';
+import { track } from '../analytics';
 import styles from './NoIdeaHelper.module.css';
 
 interface Props {
@@ -27,6 +28,7 @@ export function NoIdeaHelper({ onAdd }: Props) {
     const bullets = generateExperienceBullets(Array.from(selected));
     if (bullets.length === 0) return;
     onAdd(bullets);
+    track('helper_applied', { helperType: 'experience' });
     setSelected(new Set());
     setOpen(false);
   }
@@ -49,7 +51,10 @@ export function NoIdeaHelper({ onAdd }: Props) {
         <button
           type="button"
           className={styles.helperBtn}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            track('helper_opened', { helperType: 'experience' });
+            setOpen(true);
+          }}
         >
           No sé qué poner
         </button>

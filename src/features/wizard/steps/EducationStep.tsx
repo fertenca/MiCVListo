@@ -3,6 +3,7 @@ import { useCVStore } from '../../cv-model';
 import type { CVMode, EducationEntry, EducationStatus } from '../../cv-model';
 import type { StepRef } from '..';
 import { isLikelyValidYear } from '../softValidation';
+import { useValidationHints } from '../../analytics';
 import styles from './EducationStep.module.css';
 
 // ─── Tipos locales ────────────────────────────────────────────────────────────
@@ -127,6 +128,10 @@ function EntryForm({
   onSave,
   onCancel,
 }: FormProps) {
+  useValidationHints(
+    'educacion',
+    isLikelyValidYear(draft.year) ? [] : ['invalid_year'],
+  );
   return (
     <div className={styles.entryForm}>
       {/* Título */}

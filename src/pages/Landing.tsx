@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import TrustBanner from '../components/TrustBanner/TrustBanner';
+import { useTrackPageView } from '../features/analytics';
 import styles from './Landing.module.css';
 
 const PILLARS = [
@@ -37,6 +38,7 @@ const FOR_WHOM = [
 ];
 
 function Landing() {
+  useTrackPageView('landing_viewed');
   return (
     <>
       <section className={styles.hero}>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { profileCategories } from '../../content/suggestions/profileSuggestions';
 import { generateProfileText } from './engine';
 import type { CVMode } from '../cv-model';
+import { track } from '../analytics';
 import styles from './ProfileHelper.module.css';
 
 interface Props {
@@ -33,12 +34,14 @@ export function ProfileHelper({ mode, currentText, onReplace }: Props) {
       setPendingText(text);
     } else {
       onReplace(text);
+      track('helper_applied', { helperType: 'profile' });
       reset();
     }
   }
 
   function handleConfirmReplace() {
     if (pendingText !== null) onReplace(pendingText);
+    track('helper_applied', { helperType: 'profile' });
     reset();
   }
 
@@ -64,7 +67,10 @@ export function ProfileHelper({ mode, currentText, onReplace }: Props) {
         <button
           type="button"
           className={styles.helperBtn}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            track('helper_opened', { helperType: 'profile' });
+            setOpen(true);
+          }}
         >
           Ayudarme a escribir mi perfil
         </button>

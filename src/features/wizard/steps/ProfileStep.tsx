@@ -3,6 +3,7 @@ import { useCVStore } from '../../cv-model';
 import type { CVMode } from '../../cv-model';
 import type { StepRef } from '..';
 import { ProfileHelper } from '../../phrase-engine';
+import { useValidationHints } from '../../analytics';
 import styles from './ProfileStep.module.css';
 
 // ─── Contenido por modo ───────────────────────────────────────────────────────
@@ -45,6 +46,7 @@ const ProfileStep = forwardRef<StepRef>(function ProfileStep(_, ref) {
   const isTooLong = charCount > CHAR_SOFT_LIMIT;
   const wordCount = profile.trim() ? profile.trim().split(/\s+/).length : 0;
   const isTooShort = wordCount > 0 && wordCount < WORD_SOFT_MIN && !isTooLong;
+  useValidationHints('perfil', isTooShort ? ['short_profile'] : []);
 
   return (
     <div className={styles.form}>

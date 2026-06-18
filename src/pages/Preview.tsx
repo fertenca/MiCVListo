@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCVStore } from '../features/cv-model';
 import { ClassicTemplate } from '../features/cv-template/ClassicTemplate';
+import { track, useTrackPageView } from '../features/analytics';
 import styles from './Preview.module.css';
 
 type ActionState = 'idle' | 'generating' | 'error';
@@ -88,6 +89,8 @@ function Preview() {
   const [shareState, setShareState] = useState<ActionState>('idle');
   const [canShare] = useState(canShareFiles);
 
+  useTrackPageView('preview_viewed');
+
   useEffect(() => {
     if (!draft) navigate('/crear', { replace: true });
   }, [draft, navigate]);
@@ -96,6 +99,7 @@ function Preview() {
 
   async function handleDownloadPdf() {
     if (!draft) return;
+    track('pdf_download_clicked');
     setPdfState('generating');
     try {
       const { downloadCVPdf } = await import(
@@ -103,14 +107,17 @@ function Preview() {
       );
       await downloadCVPdf(draft);
       setPdfState('idle');
+      track('pdf_download_success', { success: true });
     } catch (err) {
       console.error('PDF generation failed:', err);
       setPdfState('error');
+      track('pdf_download_error', { success: false, area: 'pdf_download' });
     }
   }
 
   async function handleSharePdf() {
     if (!draft) return;
+    track('pdf_share_clicked');
     setShareState('generating');
     try {
       const { shareCVPdf } = await import(
@@ -118,6 +125,9 @@ function Preview() {
       );
       const shared = await shareCVPdf(draft);
       setShareState(shared ? 'idle' : 'error');
+      track(shared ? 'pdf_share_success' : 'pdf_share_error', {
+        success: shared,
+      });
     } catch (err) {
       // El usuario canceló el diálogo de compartir: no es un error.
       if (err instanceof DOMException && err.name === 'AbortError') {
@@ -126,6 +136,7 @@ function Preview() {
       }
       console.error('PDF share failed:', err);
       setShareState('error');
+      track('pdf_share_error', { success: false, area: 'pdf_share' });
     }
   }
 

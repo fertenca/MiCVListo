@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTrackPageView } from '../features/analytics';
 import styles from './NotFound.module.css';
 
 /**
@@ -7,6 +8,7 @@ import styles from './NotFound.module.css';
  * usuario nunca vea el mensaje técnico por defecto de React Router.
  */
 function NotFound() {
+  useTrackPageView('not_found_viewed');
   return (
     <section className={styles.page}>
       <p className={styles.code} aria-hidden="true">

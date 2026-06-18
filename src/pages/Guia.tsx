@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTrackPageView } from '../features/analytics';
 import styles from './Guia.module.css';
 
 /**
@@ -6,6 +7,7 @@ import styles from './Guia.module.css';
  * Tono cercano, sin lenguaje académico ni corporativo.
  */
 function Guia() {
+  useTrackPageView('guide_viewed');
   return (
     <section className={styles.page}>
       <h1 className={styles.title}>Guía para tu CV</h1>

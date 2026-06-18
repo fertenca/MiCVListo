@@ -95,26 +95,40 @@ export function isLikelyValidYear(raw: string): boolean {
   return years.length > 0;
 }
 
+export type ExperienceDateHintCode = 'invalid_date' | 'end_before_start';
+
+export interface ExperienceDateHint {
+  code: ExperienceDateHintCode;
+  message: string;
+}
+
 /**
- * Genera consejos suaves para las fechas de una experiencia.
- * Nunca bloquea: solo devuelve mensajes para mostrar como ayuda.
+ * Genera consejos suaves para las fechas de una experiencia, con un código
+ * estable por consejo (para mostrar y para métricas anónimas).
+ * Nunca bloquea.
  */
-export function validateExperienceDates(
+export function experienceDateHints(
   start: string,
   end: string,
   isCurrent: boolean,
-): string[] {
-  const msgs: string[] = [];
+): ExperienceDateHint[] {
+  const hints: ExperienceDateHint[] = [];
   const startP = parseFlexibleDate(start);
 
   if (start.trim() && !startP.valid) {
-    msgs.push('Revisá la fecha de inicio. Tiene que ser una fecha válida.');
+    hints.push({
+      code: 'invalid_date',
+      message: 'Revisá la fecha de inicio. Tiene que ser una fecha válida.',
+    });
   }
 
   if (!isCurrent) {
     const endP = parseFlexibleDate(end);
     if (end.trim() && !endP.valid) {
-      msgs.push('Revisá la fecha de fin. Tiene que ser una fecha válida.');
+      hints.push({
+        code: 'invalid_date',
+        message: 'Revisá la fecha de fin. Tiene que ser una fecha válida.',
+      });
     }
     if (
       startP.valid &&
@@ -124,10 +138,25 @@ export function validateExperienceDates(
       !endP.isCurrent &&
       endP.rank < startP.rank
     ) {
-      msgs.push('La fecha de fin debería ser posterior a la fecha de inicio.');
-      msgs.push('Si todavía trabajás ahí, podés marcar Actualidad.');
+      hints.push({
+        code: 'end_before_start',
+        message: 'La fecha de fin debería ser posterior a la fecha de inicio.',
+      });
+      hints.push({
+        code: 'end_before_start',
+        message: 'Si todavía trabajás ahí, podés marcar Actualidad.',
+      });
     }
   }
 
-  return msgs;
+  return hints;
+}
+
+/** Solo los mensajes (compatibilidad con el render existente). */
+export function validateExperienceDates(
+  start: string,
+  end: string,
+  isCurrent: boolean,
+): string[] {
+  return experienceDateHints(start, end, isCurrent).map((h) => h.message);
 }

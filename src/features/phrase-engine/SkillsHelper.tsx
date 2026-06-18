@@ -4,6 +4,7 @@ import {
   skillsSuggestionMap,
 } from '../../content/suggestions/skillsSuggestions';
 import type { SkillEntry } from '../cv-model';
+import { track } from '../analytics';
 import styles from './SkillsHelper.module.css';
 
 interface Props {
@@ -49,6 +50,7 @@ export function SkillsHelper({ existingSkills, onAdd }: Props) {
     }
 
     onAdd(toAdd);
+    track('helper_applied', { helperType: 'skills' });
     reset();
   }
 
@@ -71,7 +73,10 @@ export function SkillsHelper({ existingSkills, onAdd }: Props) {
         <button
           type="button"
           className={styles.helperBtn}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            track('helper_opened', { helperType: 'skills' });
+            setOpen(true);
+          }}
         >
           Ayudarme con mis habilidades
         </button>
