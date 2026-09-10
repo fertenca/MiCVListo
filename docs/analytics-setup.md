@@ -90,7 +90,7 @@ junto con el sitio estático. Los endpoints quedan en:
 
 ## Acceder al dashboard
 
-1. Entrá a `https://micvlisto.pages.dev/admin` (la ruta **no** está linkeada en
+1. Entrá a `https://micvlisto.fertenca.com.ar/admin` (la ruta **no** está linkeada en
    la navegación pública).
 2. Ingresá la clave (`ADMIN_ANALYTICS_TOKEN`).
 3. El navegador la guarda solo en `sessionStorage` y la manda como
