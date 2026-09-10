@@ -4,7 +4,7 @@ MiCVListo es una herramienta web gratuita para crear un CV profesional de forma 
 
 La app está pensada especialmente para personas que buscan trabajo y necesitan una guía clara para armar su CV, incluso si no tienen experiencia formal, están buscando su primer empleo o vienen de trabajos informales.
 
-**App en producción:** https://micvlisto.pages.dev
+**App en producción:** https://micvlisto.fertenca.com.ar/
 
 ![Vista previa para compartir](./public/og-image.png)
 
